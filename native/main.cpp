@@ -1,4 +1,5 @@
 #include <iostream>
+#include "bitmap.cpp"
 
 #include "Caff.h"
 #include "Ciff.h"
