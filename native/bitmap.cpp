@@ -38,7 +38,7 @@ void bitmap(vector<unsigned int> rgbVector, int width, int height, const string&
         ofstream file(fileName, ios::out | ios::binary);
         if (!file)
         {
-            printf("Could not write file\n");
+            printf("Unable to write file\n");
             throw;
         }
 
