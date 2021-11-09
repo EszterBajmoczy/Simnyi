@@ -10,26 +10,26 @@ using namespace std;
 
 namespace native {
     struct CaffHeader {
-    private:
+    public:
         char magic[4];
         uint8_t header_size;
         uint8_t num_anim;
-    public:
+
         CaffHeader();
         ~CaffHeader();
 
         void setMagic(char* m);
         char* getMagic();
 
-        void setHeaderSize(unsigned long int header_size);
-        unsigned long int getHeaderSize();
+        void setHeaderSize(uint64_t header_size);
+        uint64_t getHeaderSize();
 
-        void setNumAnim(unsigned long int num_anim);
-        unsigned long int getNumAnim();
+        void setNumAnim(uint64_t num_anim);
+        uint64_t getNumAnim();
     };
 
     struct CaffCredits {
-    private:
+    public:
         uint8_t year[2];
         uint8_t month;
         uint8_t day;
@@ -37,7 +37,7 @@ namespace native {
         uint8_t minute;
         unsigned long int creator_len;
         char *creator;
-    public:
+
         CaffCredits();
         ~CaffCredits();
 
@@ -56,18 +56,18 @@ namespace native {
         void setCreationMinute(uint8_t minute);
         uint8_t getCreationMinute();
 
-        void setCreatorLen(unsigned long int creatorLenght);
-        unsigned long int getCreatorLen();
+        void setCreatorLen(uint64_t creatorLenght);
+        uint64_t getCreatorLen();
 
         void setCreator(char *creator);
         char* getCreator();
     };
 
     struct CaffAnimation {
-    private:
+    public:
         uint64_t duration;
         Ciff* ciff;
-    public:
+
         CaffAnimation();
         ~CaffAnimation();
 
@@ -76,6 +76,25 @@ namespace native {
 
         void setCiff(Ciff* ciff);
         Ciff* getCiff();
+    };
+
+    struct CaffBlock {
+    public:
+        char id;
+        uint64_t length;
+        char* data;
+
+        CaffBlock();
+        ~CaffBlock();
+
+        void setId(char id);
+        char getId();
+
+        void setLength(uint64_t length);
+        uint64_t getLength();
+
+        void setData(char* data);
+        char* getData();
     };
 
     struct Caff {

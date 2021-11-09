@@ -131,4 +131,36 @@ namespace native {
     Ciff *native::CaffAnimation::getCiff() {
         return ciff;
     }
+
+    //Caff block
+    native::CaffBlock::CaffBlock() {
+        id = 0;
+        length = 8;
+        data = "";
+    }
+
+    native::CaffBlock::~CaffBlock() {}
+
+    void native::CaffBlock::setId(char id) {
+        this->id = id;
+    }
+    char native::CaffBlock::getId(){
+        return id;
+    }
+
+    void native::CaffBlock::setLength(uint64_t length) {
+        this->length = length;
+    }
+
+    uint64_t native::CaffBlock::getLength() {
+        return length;
+    }
+
+    void native::CaffBlock::setData(char* data) {
+        this->data = data;
+    }
+
+    char* native::CaffBlock::getData() {
+        return data;
+    }
 }

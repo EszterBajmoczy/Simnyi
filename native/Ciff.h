@@ -8,7 +8,7 @@ using namespace std;
 namespace native {
     struct CiffHeader
     {
-    private:
+    public:
         char magic[4];
         unsigned long int header_size;
         unsigned long int content_size;
@@ -16,7 +16,7 @@ namespace native {
         unsigned long int height;
         string caption;
         string tags;
-    public:
+
         CiffHeader();
         ~CiffHeader();
 
@@ -44,9 +44,9 @@ namespace native {
 
     struct CiffContent
     {
-    private:
-        vector<unsigned int> pixels;
     public:
+        vector<unsigned int> pixels;
+
         CiffContent();
         ~CiffContent();
 
@@ -55,10 +55,10 @@ namespace native {
     };
 
     struct Ciff {
-    private:
+    public:
         CiffHeader ciff_header;
         CiffContent ciff_content;
-    public:
+
         Ciff();
         ~Ciff();
 
