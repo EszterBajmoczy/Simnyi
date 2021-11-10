@@ -6,10 +6,8 @@
 
 using namespace std;
 
-void bitmap(const Caff& caff, const string& outputFileName) {
-    size_t pixelCount = width * height * 3;
-
-    if (rgbVector.size() == pixelCount) {
+void bitmap(const Ciff& ciff, const string& outputFileName) {
+    if (ciff.pixels.size() == ciff.content_size) {
         BITMAPFILEHEADER bfh;
         BITMAPINFOHEADER bih;
 
@@ -31,9 +29,9 @@ void bitmap(const Caff& caff, const string& outputFileName) {
         bih.biClrImportant = 0;
 
 
-        bfh.bfSize = 2 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + width * height * 3;
-        bih.biWidth = width;
-        bih.biHeight = height;
+        bfh.bfSize = 2 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ciff.content_size;
+        bih.biWidth = (int)ciff.width;
+        bih.biHeight = (int)ciff.height;
 
         string fileName = outputFileName + ".bmp";
 
@@ -50,10 +48,10 @@ void bitmap(const Caff& caff, const string& outputFileName) {
         file.write((char*)&bih, sizeof(bih));
 
         /*Write bitmap*/
-        for (int i = (height * width * 3) - 1; i >= 0; i = i - 3) {
-            unsigned int r = rgbVector[i];
-            unsigned int g = rgbVector[i - 1];
-            unsigned int b = rgbVector[i - 2];
+        for (int i = (int)ciff.content_size - 1; i >= 0; i-=3) {
+            unsigned int r = ciff.pixels[i];
+            unsigned int g = ciff.pixels[i - 1];
+            unsigned int b = ciff.pixels[i - 2];
             file.write((char*)&r, 1);
             file.write((char*)&g, 1);
             file.write((char*)&b, 1);

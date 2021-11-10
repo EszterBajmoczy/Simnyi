@@ -96,7 +96,7 @@ int main(int argc, char *argv[]) {
     caff.caff_credits = readCaffCredits();
     caff.caff_animations = readCaffAnimation();
 
-    bitmap(caff, argv[2]);
+    bitmap(caff.caff_animations.data.ciff, argv[2]);
 
     cout << caff.caff_credits.data.creator;
     return 0;

@@ -3,6 +3,8 @@
 
 #include <vector>
 
+using namespace std;
+
 struct Ciff {
     char magic[4];
     uint64_t header_size;
