@@ -18,14 +18,13 @@ public:
 
 class CaffCredits {
 public:
-    unsigned char year[2];
-    unsigned char month;
-    unsigned char day;
-    unsigned char hour;
-    unsigned char minute;
+    uint16_t year;
+    int8_t month;
+    int8_t day;
+    int8_t hour;
+    int8_t minute;
     uint64_t creator_len;
     string creator;
-
 };
 
 struct CaffAnimation {

@@ -2,74 +2,44 @@
 #include "bitmap.cpp"
 #include <iterator>
 #include <cstring>
+#include <algorithm>
+
+
 
 #include "Caff.h"
 
 using namespace std;
 using namespace native;
 
-vector<unsigned char> memblock;
-int position = 0;
-
+ifstream myfile;
 
 CaffBlock<CaffHeader> readCaffHeader(){
     //    caff header allways 30 byte;
     CaffBlock<CaffHeader> result = CaffBlock<CaffHeader>();
-    memcpy(&result.id, &memblock[position], 1);
-    position++;
-    memcpy(&result.length, &memblock[position], 8);
-    position +=8;
-    memcpy(&result.data.magic, &memblock[position], 4);
-    position += 4;
-    memcpy(&result.data.header_size, &memblock[position], 8);
-    position += 8;
-    memcpy(&result.data.num_anim, &memblock[position], 8);
-    position += 8;
-    if (position != 29) {
-        cerr << "error caff header read";
-        abort();
-    }
+    myfile.read((char*)&result.id, 1);
+    myfile.read((char*)&result.length, 8);
+    myfile.read((char*)&result.data.magic, 4);
+    myfile.read((char*)&result.data.header_size, 8);
+    myfile.read((char*)&result.data.num_anim, 8);
     return result;
 }
 
 CaffBlock<CaffCredits> readCaffCredits(){
-    if (position != 29) {
-        cerr << "error caff credits read";
-        abort();
-    }
 
     CaffBlock<CaffCredits> result = CaffBlock<CaffCredits>();
-    std::memcpy(&result.id, &memblock[position], 1);
-    position++;
-    if(result.id != 2){
-        cerr << "caff credits id != 2";
-        abort();
-    }
-    std::memcpy(&result.length, &memblock[position], 8);
-    position += 8;
+    myfile.read((char*)&result.id, 1);
+    myfile.read((char*)&result.length, 8);
 
-    if(position != 38){
-        cerr << "error caff credits read";
-        abort();
-    }
+    myfile.read((char*)&result.data.year, 2);
+    myfile.read((char*)&result.data.month, 1);
+    myfile.read((char*)&result.data.day, 1);
+    myfile.read((char*)&result.data.hour, 1);
+    myfile.read((char*)&result.data.minute, 1);
+    myfile.read((char*)&result.data.creator_len, 8);
 
-    std::memcpy(&result.data.year, &memblock[position], 2);
-    position += 2;
-    std::memcpy(&result.data.month, &memblock[position], 1);
-    position++;
-    std::memcpy(&result.data.day, &memblock[position], 1);
-    position++;
-    std::memcpy(&result.data.hour, &memblock[position], 1);
-    position++;
-    std::memcpy(&result.data.minute, &memblock[position], 1);
-    position++;
-    std::memcpy(&result.data.creator_len, &memblock[position], 8);
-    position += 8;
-
-    uint64_t check = 1+8+2+1+1+1+1+result.data.creator_len;
-    if(result.length == check){
-        std::memcpy(&result.data.creator[0], &memblock[position], result.data.creator_len);
-        position += (int)result.data.creator_len;
+    if (result.data.creator_len < result.length) {
+        result.data.creator = std::string(result.data.creator_len, ' ');
+        myfile.read(&result.data.creator[0], result.data.creator_len);
     }
     return result;
 }
@@ -91,17 +61,9 @@ int main(int argc, char *argv[]) {
         return 3;
     }
 
-    ifstream file(argv[1], ios::in | ios::binary);
-    if (file.is_open()) {
-        cout << "file open, and read to memory." << endl;
-        std::copy(
-                std::istream_iterator<unsigned char>(file),
-                std::istream_iterator<unsigned char>(),
-                std::back_inserter(memblock)
-        );
-        file.close();
-        cout << "file is closed!" << endl;
-    }
+    myfile.open(argv[1], ios::in | ios::binary);
+
+
 
     Caff caff;
     caff.caff_header = readCaffHeader();
