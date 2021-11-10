@@ -26,7 +26,7 @@ public:
 
 struct CaffAnimation {
     uint64_t duration;
-    Ciff *ciff;
+    Ciff ciff = Ciff();
 };
 
 template<typename T>
@@ -40,7 +40,7 @@ class Caff {
 public:
     CaffBlock<CaffHeader> caff_header;
     CaffBlock<CaffCredits> caff_credits;
-    vector<CaffBlock<CaffAnimation>> caff_animations;
+    CaffBlock<CaffAnimation> caff_animations;
 };
 
 #endif //NATIVE_CAFF_H

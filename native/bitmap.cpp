@@ -1,10 +1,12 @@
 #include "bitmap.h"
+#include "Caff.h"
 #include <vector>
 #include <fstream>
 
+
 using namespace std;
 
-void bitmap(vector<unsigned int> rgbVector, int width, int height, const string& outputFileName) {
+void bitmap(const Caff& caff, const string& outputFileName) {
     size_t pixelCount = width * height * 3;
 
     if (rgbVector.size() == pixelCount) {
