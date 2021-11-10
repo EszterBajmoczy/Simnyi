@@ -16,10 +16,10 @@ public:
 class CaffCredits {
 public:
     uint16_t year;
-    int8_t month;
-    int8_t day;
-    int8_t hour;
-    int8_t minute;
+    uint8_t month;
+    uint8_t day;
+    uint8_t hour;
+    uint8_t minute;
     uint64_t creator_len;
     string creator;
 };

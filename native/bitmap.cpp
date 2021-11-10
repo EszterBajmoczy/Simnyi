@@ -1,38 +1,40 @@
-#include "bitmap.h"
 #include "Caff.h"
-#include <vector>
 #include <fstream>
 
 
 using namespace std;
 
+typedef struct
+{
+    unsigned int   bfSize;
+    unsigned short bfReserved1 = 0;
+    unsigned short bfReserved2 = 0;
+    unsigned int   bfOffBits = 0x36;
+} BITMAPFILEHEADER;
+
+typedef struct
+{
+    unsigned int   biSize;
+    int            biWidth;
+    int            biHeight;
+    unsigned short biPlanes = 1;
+    unsigned short biBitCount = 24;
+    unsigned int   biCompression = 0;
+    unsigned int   biSizeImage = 0;
+    int            biXPelsPerMeter = 5000;
+    int            biYPelsPerMeter = 5000;
+    unsigned int   biClrUsed = 0;
+    unsigned int   biClrImportant = 0;
+} BITMAPINFOHEADER;
+
 void bitmap(const Ciff& ciff, const string& outputFileName) {
     if (ciff.pixels.size() == ciff.content_size) {
         BITMAPFILEHEADER bfh;
         BITMAPINFOHEADER bih;
-
-        /* Magic number for file. It does not fit in the header structure due to alignment requirements, so put it outside */
-        unsigned short bfType = 0x4d42;
-
-        bfh.bfReserved1 = 0;
-        bfh.bfReserved2 = 0;
-        bfh.bfOffBits = 0x36;
-
         bih.biSize = sizeof(BITMAPINFOHEADER);
-        bih.biPlanes = 1;
-        bih.biBitCount = 24;
-        bih.biCompression = 0;
-        bih.biSizeImage = 0;
-        bih.biXPelsPerMeter = 5000;
-        bih.biYPelsPerMeter = 5000;
-        bih.biClrUsed = 0;
-        bih.biClrImportant = 0;
-
-
         bfh.bfSize = 2 + sizeof(BITMAPFILEHEADER) + sizeof(BITMAPINFOHEADER) + ciff.content_size;
         bih.biWidth = (int)ciff.width;
         bih.biHeight = (int)ciff.height;
-
         string fileName = outputFileName + ".bmp";
 
         ofstream file(fileName, ios::out | ios::binary);
@@ -42,12 +44,11 @@ void bitmap(const Ciff& ciff, const string& outputFileName) {
             throw;
         }
 
-        /*Write headers*/
+        unsigned short bfType = 0x4d42;
         file.write((char*) &bfType, sizeof(bfType));
-        file.write((char*)&bfh, sizeof(bfh));
-        file.write((char*)&bih, sizeof(bih));
+        file.write((char*) &bfh, sizeof(bfh));
+        file.write((char*) &bih, sizeof(bih));
 
-        /*Write bitmap*/
         for (int i = (int)ciff.content_size - 1; i >= 0; i-=3) {
             unsigned int r = ciff.pixels[i];
             unsigned int g = ciff.pixels[i - 1];
