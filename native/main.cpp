@@ -1,6 +1,5 @@
 #include <iostream>
 #include "bitmap.cpp"
-#include <fstream>
 #include <iterator>
 #include <cstring>
 
@@ -9,8 +8,71 @@
 using namespace std;
 using namespace native;
 
-vector<char> memblock;
+vector<unsigned char> memblock;
 int position = 0;
+
+
+CaffBlock<CaffHeader> readCaffHeader(){
+    //    caff header allways 30 byte;
+    CaffBlock<CaffHeader> result = CaffBlock<CaffHeader>();
+    memcpy(&result.id, &memblock[position], 1);
+    position++;
+    memcpy(&result.length, &memblock[position], 8);
+    position +=8;
+    memcpy(&result.data.magic, &memblock[position], 4);
+    position += 4;
+    memcpy(&result.data.header_size, &memblock[position], 8);
+    position += 8;
+    memcpy(&result.data.num_anim, &memblock[position], 8);
+    position += 8;
+    if (position != 29) {
+        cerr << "error caff header read";
+        abort();
+    }
+    return result;
+}
+
+CaffBlock<CaffCredits> readCaffCredits(){
+    if (position != 29) {
+        cerr << "error caff credits read";
+        abort();
+    }
+
+    CaffBlock<CaffCredits> result = CaffBlock<CaffCredits>();
+    std::memcpy(&result.id, &memblock[position], 1);
+    position++;
+    if(result.id != 2){
+        cerr << "caff credits id != 2";
+        abort();
+    }
+    std::memcpy(&result.length, &memblock[position], 8);
+    position += 8;
+
+    if(position != 38){
+        cerr << "error caff credits read";
+        abort();
+    }
+
+    std::memcpy(&result.data.year, &memblock[position], 2);
+    position += 2;
+    std::memcpy(&result.data.month, &memblock[position], 1);
+    position++;
+    std::memcpy(&result.data.day, &memblock[position], 1);
+    position++;
+    std::memcpy(&result.data.hour, &memblock[position], 1);
+    position++;
+    std::memcpy(&result.data.minute, &memblock[position], 1);
+    position++;
+    std::memcpy(&result.data.creator_len, &memblock[position], 8);
+    position += 8;
+
+    uint64_t check = 1+8+2+1+1+1+1+result.data.creator_len;
+    if(result.length == check){
+        std::memcpy(&result.data.creator[0], &memblock[position], result.data.creator_len);
+        position += (int)result.data.creator_len;
+    }
+    return result;
+}
 
 int main(int argc, char *argv[]) {
 
@@ -33,56 +95,18 @@ int main(int argc, char *argv[]) {
     if (file.is_open()) {
         cout << "file open, and read to memory." << endl;
         std::copy(
-                std::istream_iterator<char>(file),
-                std::istream_iterator<char>(),
+                std::istream_iterator<unsigned char>(file),
+                std::istream_iterator<unsigned char>(),
                 std::back_inserter(memblock)
         );
         file.close();
         cout << "file is closed!" << endl;
     }
 
-
     Caff caff;
-    CaffBlock caffBlock;
-    caffBlock.id = memblock.front();
-    std::memcpy(&caffBlock.length, &memblock[1], 8);
-    position = 9;
-    std::memcpy(&caff.caff_header.magic, &memblock[position], 4);
-    position += 4;
-    std::memcpy(&caff.caff_header.header_size, &memblock[position], 8);
-    position += 8;
-    std::memcpy(&caff.caff_header.num_anim, &memblock[position], 8);
-    position += 8;
-    if (position != 29) {
-        cerr << "error";
-        return position;
-    }
+    caff.caff_header = readCaffHeader();
+    caff.caff_credits = readCaffCredits();
 
-    char caffCreditsId;
-    std::memcpy(&caffCreditsId, &memblock[position], 1);
-    position++;
-    if(caffCreditsId != 2){
-        cerr << "caff credits id != 2";
-        return position;
-    }
-    uint64_t caffCreditsLength;
-    std::memcpy(&caffCreditsLength, &memblock[position], 8);
-    position += 8;
-
-    std::memcpy(&caff.caff_credits.year[0], &memblock[position], 1);
-    position++;
-    std::memcpy(&caff.caff_credits.year[1], &memblock[position], 1);
-    position++;
-    std::memcpy(&caff.caff_credits.month, &memblock[position++], 1);
-    std::memcpy(&caff.caff_credits.day, &memblock[position++], 1);
-    std::memcpy(&caff.caff_credits.hour, &memblock[position++], 1);
-    std::memcpy(&caff.caff_credits.minute, &memblock[position++], 1);
-    std::memcpy(&caff.caff_credits.creator_len, &memblock[position], 8);
-    position += 8;
-    caff.caff_credits.creator = new char[caff.caff_credits.creator_len]();
-    std::strncpy(caff.caff_credits.creator, &memblock[position], caff.caff_credits.creator_len);
-    position += (int)caff.caff_credits.creator_len;
-    cout << "cica";
 
 
 

@@ -7,81 +7,57 @@
 #include "Ciff.h"
 
 using namespace std;
+using namespace native;
 
-namespace native {
-    class CaffHeader {
-    public:
-        char magic[4];
-        uint8_t header_size;
-        uint8_t num_anim;
+class CaffHeader {
+public:
+    char magic[4];
+    uint64_t header_size = 0;
+    uint64_t num_anim = 0;
+};
 
-        CaffHeader();
+class CaffCredits {
+public:
+    unsigned char year[2];
+    unsigned char month;
+    unsigned char day;
+    unsigned char hour;
+    unsigned char minute;
+    uint64_t creator_len;
+    string creator;
 
-        ~CaffHeader();
+};
 
-    };
+struct CaffAnimation {
+public:
+    uint64_t duration;
+    Ciff *ciff;
 
-    struct CaffCredits {
-    public:
-        uint8_t year[2];
-        uint8_t month;
-        uint8_t day;
-        uint8_t hour;
-        uint8_t minute;
-        uint64_t creator_len;
-        char *creator;
+    CaffAnimation();
 
-        ~CaffCredits();
+    ~CaffAnimation();
 
-    };
+    void setDuration(uint64_t duration);
 
-    struct CaffAnimation {
-    public:
-        uint64_t duration;
-        Ciff *ciff;
+    uint64_t getDuration();
 
-        CaffAnimation();
+    void setCiff(Ciff *ciff);
 
-        ~CaffAnimation();
+    Ciff *getCiff();
+};
 
-        void setDuration(uint64_t duration);
+template <typename T>
+struct CaffBlock {
+    unsigned char id = '0';
+    uint64_t length = 0;
+    T data;
+};
 
-        uint64_t getDuration();
-
-        void setCiff(Ciff *ciff);
-
-        Ciff *getCiff();
-    };
-
-    struct CaffBlock {
-    public:
-        char id;
-        uint64_t length;
-        char *data;
-
-        CaffBlock();
-
-        ~CaffBlock();
-
-        void setId(char id);
-
-        char getId();
-
-        void setLength(uint64_t length);
-
-        uint64_t getLength();
-
-        void setData(char *data);
-
-        char *getData();
-    };
-
-    struct Caff {
-        CaffHeader caff_header;
-        CaffCredits caff_credits;
-        vector<CaffAnimation> caff_animations;
-        Caff();
-    };
-}
+class Caff {
+public:
+    CaffBlock<CaffHeader> caff_header;
+    CaffBlock<CaffCredits> caff_credits;
+    vector<CaffBlock<CaffAnimation>> caff_animations;
+};
 
 #endif //NATIVE_CAFF_H
