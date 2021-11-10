@@ -3,4 +3,4 @@ project(native)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(native main.cpp Ciff.cpp Ciff.h Caff.cpp Caff.h)
+add_executable(native main.cpp Ciff.h Caff.h)

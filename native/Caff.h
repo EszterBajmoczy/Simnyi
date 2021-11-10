@@ -1,13 +1,10 @@
 #ifndef NATIVE_CAFF_H
 #define NATIVE_CAFF_H
 
-#include <fstream>
 #include <vector>
-
 #include "Ciff.h"
 
 using namespace std;
-using namespace native;
 
 class CaffHeader {
 public:
@@ -28,26 +25,13 @@ public:
 };
 
 struct CaffAnimation {
-public:
     uint64_t duration;
     Ciff *ciff;
-
-    CaffAnimation();
-
-    ~CaffAnimation();
-
-    void setDuration(uint64_t duration);
-
-    uint64_t getDuration();
-
-    void setCiff(Ciff *ciff);
-
-    Ciff *getCiff();
 };
 
-template <typename T>
+template<typename T>
 struct CaffBlock {
-    unsigned char id = '0';
+    uint8_t id = '0';
     uint64_t length = 0;
     T data;
 };
