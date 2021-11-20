@@ -1,0 +1,23 @@
+<nav *ngIf="currentUser" class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="navbar-nav">
+    <a class="nav-item nav-link" routerLink="/">Home</a>
+    <a (click)="logout()" class="nav-item nav-link">Logout</a>
+  </div>
+</nav>
+
+<nav *ngIf="!currentUser" class="navbar navbar-expand navbar-dark bg-dark">
+  <div class="navbar-nav">
+    Please login for more content.
+  </div>
+</nav>
+
+<div class="jumbotron">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-6 offset-sm-3">
+        <alert></alert>
+        <router-outlet></router-outlet>
+      </div>
+    </div>
+  </div>
+</div>
