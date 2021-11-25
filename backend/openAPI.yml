@@ -1,0 +1,320 @@
+openapi: 3.0.0
+info:
+  description: This is a simple API
+  version: 1.0.0-oas3
+  title: Simple Inventory API
+  contact:
+    email: you@your-company.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+tags:
+  - name: admins
+    description: Secured Admin-only calls
+  - name: users
+    description: Operations available to regular UserDTOs
+  - name: caff
+    description: Operations with caff files
+paths:
+  /user:
+    get:
+      tags:
+        - users
+      summary: Logs UserDTO into the system
+      description: Logs UserDTO into the system
+      operationId: loginUserDTO
+      parameters:
+        - name: name
+          in: query
+          description: The UserDTO name for login
+          required: true
+          schema:
+            type: string
+        - name: password
+          in: query
+          description: The password for login
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          headers:
+            X-Rate-Limit:
+              description: calls per hour allowed by the UserDTO
+              schema:
+                type: integer
+                format: int32
+            X-Expires-After:
+              description: date in UTC when token expires
+              schema:
+                type: string
+                format: date-time
+          content:
+            application/json:
+              schema:
+                type: string
+        '400':
+          description: Invalid UserDTOname/password supplied
+    post:
+      tags:
+        - users
+      summary: register new UserDTO
+      operationId: registerUserDTO
+      description: Register new UserDTO
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+        description: UserDTO to add
+        required: true
+      responses:
+        '201':
+          description: UserDTO added
+        '400':
+          description: invalid input, object invalid
+        '409':
+          description: an existing UserDTO already exists
+    put:
+      tags:
+        - users
+      summary: Update UserDTO password
+      operationId: updateUserDTOPassword
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PasswordDTO'
+        description: UserDTO to add
+        required: true
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid UserDTO supplied
+        '404':
+          description: UserDTO not found
+    delete:
+      tags:
+        - users
+      summary: Delete UserDTO
+      operationId: deleteUserDTO
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Invalid UserDTO supplied
+        '404':
+          description: UserDTO not found
+  /UserDTO/logout:
+    get:
+      tags:
+        - users
+      summary: Logs out current logged in UserDTO session
+      description: Logs out current logged in UserDTO session
+      operationId: logoutUserDTO
+      responses:
+        default:
+          description: successful operation
+  /admin/register:
+    post:
+      tags:
+        - admins
+      summary: register new admin UserDTO
+      operationId: registerAdminUserDTO
+      description: Register new admin UserDTO
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+        description: Admin to add
+        required: true
+      responses:
+        '201':
+          description: admin UserDTO added
+        '400':
+          description: invalid input, object invalid
+        '409':
+          description: an existing UserDTO already exists
+  /caff:
+    post:
+      tags:
+        - caff
+      summary: Upload a caff file
+      operationId: uploadCaff
+      description: Upload a caff file
+      requestBody:
+        $ref: '#/components/requestBodies/Caff'
+      responses:
+        '201':
+          description: caff added
+        '400':
+          description: invalid input, object invalid
+    get:
+      tags:
+        - caff
+      summary: Get caff files by searchquery or all
+      operationId: getCaffs
+      description: Get caff files
+      parameters:
+        - in: query
+          name: name
+          required: true
+          example: John Doe
+          schema:
+            type: string
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Caff'
+        '400':
+          description: invalid input, object invalid
+    put:
+      tags:
+        - caff
+      summary: Modify caff file
+      operationId: modifyCaff
+      description: Modify caff file
+      requestBody:
+        $ref: '#/components/requestBodies/Caff'
+      responses:
+        '201':
+          description: caff added
+        '400':
+          description: invalid input, object invalid
+  /caff/{caffId}:
+    delete:
+      tags:
+        - caff
+      summary: Delete caff file
+      operationId: deleteCaff
+      description: Delete caff file
+      parameters:
+        - in: path
+          name: caffId
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: success
+        '400':
+          description: invalid input, object invalid
+    get:
+      tags:
+        - caff
+      summary: Get caff file
+      operationId: getCaffById
+      description: Get caff file
+      parameters:
+        - in: path
+          name: caffId
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Caff'
+        '400':
+          description: invalid input, object invalid
+  /comment/{caffId}:
+    post:
+      tags:
+        - caff
+      summary: Comment to a caff file
+      operationId: commentToCaff
+      description: Comment to a caff file
+      parameters:
+        - in: path
+          name: caffId
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: success
+        '400':
+          description: invalid input, object invalid
+servers:
+  - url: https://virtserver.swaggerhub.com/Simnyi/Simnyi/1.0.0
+components:
+  requestBodies:
+    Caff:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Caff'
+      description: Caff file
+      required: true
+  schemas:
+    UserDTO:
+      type: object
+      required:
+        - UserDTOname
+        - password
+      properties:
+        UserDTOname:
+          type: string
+          example: Name Joe
+        password:
+          type: string
+          format: password
+          example: base64 encoded string
+    PasswordDTO:
+      type: object
+      required:
+        - password
+      properties:
+        password:
+          type: string
+          example: base64 encoded string
+          format: password
+    Caff:
+      type: object
+      required:
+        - id
+        - name
+        - file
+      properties:
+        id:
+          type: number
+          example: 23
+        name:
+          type: string
+          example: Name Joe
+        file:
+          type: string
+        comment:
+          type: array
+          items:
+            $ref: '#/components/schemas/Comment'
+    Comment:
+      type: object
+      required:
+        - id
+        - nameOfUserDTO
+        - caffId
+        - content
+      properties:
+        id:
+          type: number
+          example: 23
+        nameOfUserDTO:
+          type: string
+          example: Name Joe
+        caffId:
+          type: number
+          example: 235435
+        content:
+          type: string
