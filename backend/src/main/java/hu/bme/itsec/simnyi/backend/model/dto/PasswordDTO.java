@@ -1,4 +1,4 @@
-package hu.bme.itsec.simnyi.backend.model;
+package hu.bme.itsec.simnyi.backend.model.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,17 +6,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
-
-  @NotBlank
-  @Pattern(regexp = "^\\S*$")
-  private String username;
+public class PasswordDTO   {
 
   @NotBlank
   private String password;

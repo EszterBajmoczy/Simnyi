@@ -1,29 +1,29 @@
 package hu.bme.itsec.simnyi.backend.controller;
 
-import hu.bme.itsec.simnyi.backend.model.PasswordDTO;
-import hu.bme.itsec.simnyi.backend.model.User;
-import hu.bme.itsec.simnyi.backend.model.UserDTO;
+import hu.bme.itsec.simnyi.backend.model.dto.PasswordDTO;
+import hu.bme.itsec.simnyi.backend.model.dto.UserDTO;
 import hu.bme.itsec.simnyi.backend.service.UserService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotBlank;
+
 @RestController
 @Tag(name = "User")
-@RequestMapping(path = "/user")
 public class UserController {
 
     private final UserService userService;
 
     @Autowired
-    public UserController(UserService userService, ModelMapper modelMapper) {
+    public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @GetMapping
+    @PostMapping(path = "/public/user/login")
     public ResponseEntity<Void> login(@Validated @RequestBody UserDTO dto){
         return ResponseEntity
                 .ok()
@@ -31,14 +31,15 @@ public class UserController {
                 .build();
     }
 
-    @PostMapping
+    @PostMapping(path = "/public/user/register")
     public ResponseEntity<Void> register(@Validated @RequestBody UserDTO dto){
         return ResponseEntity
                 .status(userService.register(dto))
                 .build();
     }
 
-    @PatchMapping
+    @SecurityRequirement(name = "Authorization")
+    @PatchMapping(path = "/user/password-update")
     public ResponseEntity<Void> passwordUpdate(@Validated @RequestBody PasswordDTO dto){
         return ResponseEntity
                 .ok()
@@ -47,15 +48,30 @@ public class UserController {
 
     }
 
-    @DeleteMapping
+
+    @SecurityRequirement(name = "Authorization")
+    @DeleteMapping(path = "/user/delete")
     public ResponseEntity<Void> delete(){
-        return ResponseEntity.ok().build();
+        userService.delete();
+        return ResponseEntity
+                .ok()
+                .build();
     }
 
-    @GetMapping(path = "/logout")
+
+    @DeleteMapping(path = "/admin/delete/{username}")
+    public ResponseEntity<Void> delete(@Validated @NotBlank @PathVariable("username") String username){
+        userService.delete();
+        userService.delete(username);
+        return ResponseEntity
+                .ok()
+                .build();
+    }
+
+    @GetMapping(path = "/user/logout")
     public ResponseEntity<Void> logout(){
         // WTFa
-        return ResponseEntity.ok().header("Authorization", "deleted").build();
+        return ResponseEntity.ok().build();
     }
 
 }

@@ -56,7 +56,7 @@ public class JwtTokenUtil {
         return claims.getSubject().split(",")[1];
     }
 
-    public String getCurrentUserEmail() {
+    public String getCurrentUsername() {
         try {
             return ((UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getUsername();
         } catch (Exception e) {

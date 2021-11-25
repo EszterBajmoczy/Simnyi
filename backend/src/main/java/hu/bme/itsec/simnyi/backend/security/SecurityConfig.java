@@ -1,5 +1,6 @@
 package hu.bme.itsec.simnyi.backend.security;
 
+import hu.bme.itsec.simnyi.backend.model.Role;
 import hu.bme.itsec.simnyi.backend.repository.UserRepository;
 import hu.bme.itsec.simnyi.backend.service.UserService;
 import org.slf4j.Logger;
@@ -86,14 +87,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         List<String> enabledEndpoints = List.of(
                 String.format("%s/**", restApiDocPath),
                 String.format("%s/**", swaggerPath),
-                "/public/**"
+                "/public/**",
+                "/caff/**"
         );
 
 //      Set permissions on endpoints
         if (securityEnabled) {
             http.authorizeRequests()
-                    .antMatchers("*").permitAll()
                     .antMatchers(enabledEndpoints.toArray(String[]::new)).permitAll()
+                    .antMatchers("/admin/delete/**").hasAnyRole(Role.ADMIN.getAuthority())
                     // Our private endpoints
                     .anyRequest().authenticated();
         } else {

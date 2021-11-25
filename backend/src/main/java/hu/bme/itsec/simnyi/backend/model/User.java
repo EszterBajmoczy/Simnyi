@@ -1,23 +1,28 @@
 package hu.bme.itsec.simnyi.backend.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
 
-@Entity
+@Document(collection = "user")
+@AllArgsConstructor
+@NoArgsConstructor
 public class User implements UserDetails {
 
     @Id
     @Getter
     @Setter
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     @Setter
-    @Column(unique = true)
     private String username;
 
     @Setter
@@ -26,6 +31,11 @@ public class User implements UserDetails {
     @Setter
     @Getter
     private Role grantedAuthority;
+
+    @Getter
+    @Setter
+    @NotNull
+    private List<Caff> caffList = new ArrayList<>();
 
     @Override
     public List<Role> getAuthorities() {
