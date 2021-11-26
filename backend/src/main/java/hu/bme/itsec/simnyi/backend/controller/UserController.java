@@ -59,12 +59,6 @@ public class UserController {
                 .build();
     }
 
-    @GetMapping(path = "/user/logout")
-    public ResponseEntity<Void> logout(){
-        // WTFa
-        return ResponseEntity.ok().build();
-    }
-
     @SecurityRequirement(name = "Authorization")
     @DeleteMapping(path = "/admin/delete/{username}")
     public ResponseEntity<Void> delete(@Validated @NotBlank @PathVariable("username") String username){
