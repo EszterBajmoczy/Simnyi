@@ -95,7 +95,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         if (securityEnabled) {
             http.authorizeRequests()
                     .antMatchers(enabledEndpoints.toArray(String[]::new)).permitAll()
-                    .antMatchers("/admin/delete/**").hasAnyRole(Role.ADMIN.getAuthority())
+                    .antMatchers("/admin/delete/**").hasAuthority(Role.ADMIN.getAuthority())
+                    .antMatchers("/admin/register").hasAuthority(Role.ADMIN.getAuthority())
                     // Our private endpoints
                     .anyRequest().authenticated();
         } else {

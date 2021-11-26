@@ -1,5 +1,6 @@
 package hu.bme.itsec.simnyi.backend.controller;
 
+import hu.bme.itsec.simnyi.backend.model.Role;
 import hu.bme.itsec.simnyi.backend.model.dto.PasswordDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.UserDTO;
 import hu.bme.itsec.simnyi.backend.service.UserService;
@@ -34,7 +35,7 @@ public class UserController {
     @PostMapping(path = "/public/user/register")
     public ResponseEntity<Void> register(@Validated @RequestBody UserDTO dto){
         return ResponseEntity
-                .status(userService.register(dto))
+                .status(userService.register(dto, Role.USER))
                 .build();
     }
 
@@ -58,20 +59,26 @@ public class UserController {
                 .build();
     }
 
+    @GetMapping(path = "/user/logout")
+    public ResponseEntity<Void> logout(){
+        // WTFa
+        return ResponseEntity.ok().build();
+    }
 
+    @SecurityRequirement(name = "Authorization")
     @DeleteMapping(path = "/admin/delete/{username}")
     public ResponseEntity<Void> delete(@Validated @NotBlank @PathVariable("username") String username){
-        userService.delete();
         userService.delete(username);
         return ResponseEntity
                 .ok()
                 .build();
     }
 
-    @GetMapping(path = "/user/logout")
-    public ResponseEntity<Void> logout(){
-        // WTFa
-        return ResponseEntity.ok().build();
+    @PostMapping(path = "/admin/register")
+    public ResponseEntity<Void> registerAdmin(@Validated @RequestBody UserDTO dto){
+        return ResponseEntity
+                .status(userService.register(dto, Role.ADMIN))
+                .build();
     }
 
 }
