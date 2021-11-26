@@ -42,12 +42,12 @@ public class UserService {
         this.jwtTokenUtil = jwtTokenUtil;
     }
 
-    public HttpStatus register(UserDTO dto) {
+    public HttpStatus register(UserDTO dto, Role role) {
         try {
             var user = new User();
             user.setUsername(dto.getUsername());
             user.setPassword(getEncodedPassword(dto.getPassword()));
-            user.setGrantedAuthority(Role.USER);
+            user.setGrantedAuthority(role);
             userRepository.save(user);
         } catch (Exception e) {
             logger.error("reserved username", e);
