@@ -40,6 +40,14 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "Authorization")
+    @PutMapping(path = "/user/user-update")
+    public ResponseEntity<Void> update(@Validated @RequestBody UserDTO dto){
+        return ResponseEntity
+                .status(userService.userDataUpdate(dto))
+                .build();
+    }
+
+    @SecurityRequirement(name = "Authorization")
     @PatchMapping(path = "/user/password-update")
     public ResponseEntity<Void> passwordUpdate(@Validated @RequestBody PasswordDTO dto){
         return ResponseEntity
@@ -68,6 +76,7 @@ public class UserController {
                 .build();
     }
 
+    @SecurityRequirement(name = "Authorization")
     @PostMapping(path = "/admin/register")
     public ResponseEntity<Void> registerAdmin(@Validated @RequestBody UserDTO dto){
         return ResponseEntity
