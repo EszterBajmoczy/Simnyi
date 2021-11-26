@@ -1,8 +1,9 @@
 package hu.bme.itsec.simnyi.backend.service;
 
 import hu.bme.itsec.simnyi.backend.exception.CustomHttpException;
+import hu.bme.itsec.simnyi.backend.model.Role;
 import hu.bme.itsec.simnyi.backend.model.User;
-import hu.bme.itsec.simnyi.backend.model.UserDTO;
+import hu.bme.itsec.simnyi.backend.model.dto.UserDTO;
 import hu.bme.itsec.simnyi.backend.repository.UserRepository;
 import hu.bme.itsec.simnyi.backend.security.JwtTokenUtil;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotBlank;
 import java.util.Base64;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -45,6 +47,7 @@ public class UserService {
             var user = new User();
             user.setUsername(dto.getUsername());
             user.setPassword(getEncodedPassword(dto.getPassword()));
+            user.setGrantedAuthority(Role.USER);
             userRepository.save(user);
         } catch (Exception e) {
             logger.error("reserved username", e);
@@ -58,7 +61,7 @@ public class UserService {
      */
     public HttpHeaders login(UserDTO dto) {
         Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), dto.getPassword()));
+                .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), getDecodedPassword(dto.getPassword())));
         var result = (User) authenticate.getPrincipal();
         return jwtTokenUtil.createAuthorizationHeader(result);
     }
@@ -68,7 +71,11 @@ public class UserService {
     }
 
     private String getEncodedPassword(@NotBlank String password){
-        return passwordEncoder.encode(new String(Base64.getDecoder().decode(password)));
+        return passwordEncoder.encode(getDecodedPassword(password));
+    }
+
+    private String getDecodedPassword(@NotBlank String password){
+        return new String(Base64.getDecoder().decode(password));
     }
 
     public String passwordUpdate(String password) {
@@ -79,5 +86,19 @@ public class UserService {
         }
         //FIXME getCurrentUser();
         return "token";
+    }
+
+    public Optional<User> getCurrentUser(){
+        return userRepository.findUserByUsername(
+                jwtTokenUtil.getCurrentUsername()
+        );
+    }
+
+    public void delete() {
+        getCurrentUser().ifPresent(userRepository::delete);
+    }
+
+    public void delete(String username) {
+        userRepository.findUserByUsername(username).ifPresent(userRepository::delete);
     }
 }

@@ -1,0 +1,16 @@
+version: '3.9'
+services:
+  mongodb-simnyi:
+    container_name: mongodb-simyi
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: rootpass
+      MONGO_INITDB_DATABASE: simnyidb
+networks:
+  default:
+    name: simnyi-network
+    driver: bridge
