@@ -88,6 +88,20 @@ public class UserService {
         return "token";
     }
 
+    public HttpStatus userDataUpdate(UserDTO dto) {
+        var user = userRepository.findUserByUsername(jwtTokenUtil.getCurrentUsername()).get();
+
+        if(dto.getUsername() != null && !dto.getUsername().equals(user.getUsername())){
+            user.setUsername(dto.getUsername());
+        }
+
+        if(dto.getPassword() != null && !dto.getPassword().equals(user.getPassword())){
+            user.setPassword(getEncodedPassword(dto.getPassword()));
+        }
+        userRepository.save(user);
+        return HttpStatus.OK;
+    }
+
     public Optional<User> getCurrentUser(){
         return userRepository.findUserByUsername(
                 jwtTokenUtil.getCurrentUsername()
