@@ -2,7 +2,6 @@ package hu.bme.itsec.simnyi.backend.controller;
 
 import hu.bme.itsec.simnyi.backend.model.Caff;
 import hu.bme.itsec.simnyi.backend.service.CaffService;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +32,6 @@ public class CaffController {
 
     @GetMapping(path = "/caff/{caffId}")
     public ResponseEntity<Caff> findCaffById(@Validated @NotBlank @PathVariable(name = "caffId") String caffId){
-        ResponseEntity.ok(caffService.findCaffById(caffId));
-        return null;
+        return ResponseEntity.ok(caffService.findCaffById(caffId));
     }
-
-
 }
