@@ -19,10 +19,10 @@ public class CommentDTO {
     private String id;
 
     @NotBlank
-    private User nameOfUser;
+    private String nameOfUser;
 
     @NotNull
-    private Long caffId;
+    private String caffId;
 
     @NotNull
     private String content;
