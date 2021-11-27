@@ -66,9 +66,8 @@ public class CaffService {
     }
 
     public Caff findCaffById(@NotBlank String caffId) {
-        var result = caffRepository.findCaffByName(caffId).map(fileContentStore::getResource).orElseThrow(() -> new IllegalArgumentException("bajvan"));
-
-        return null;
+        var result = caffRepository.findCaffByName(caffId);
+        return result.orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
     }
 
     private byte[] readBMP(String name) throws IOException {
