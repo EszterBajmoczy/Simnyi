@@ -20,19 +20,18 @@ export class CaffComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAllUsers();
+    //this.loadAllUsers();
   }
 
-  //TODO fix (CORS policy)
-  deleteUser(name: string) {
-    this.authenticationService.delete(name)
-      .pipe(first())
-      .subscribe(() => this.loadAllUsers());
-  }
+  /* deleteUser(name: string) {
+     this.authenticationService.delete(name)
+       .pipe(first())
+       .subscribe(() => this.loadAllUsers());
+   }
 
-  private loadAllUsers() {
-    this.authenticationService.getAll()
-      .pipe(first())
-      .subscribe(users => this.users = users);
-  }
+   private loadAllUsers() {
+     this.authenticationService.getAll()
+       .pipe(first())
+       .subscribe(users => this.users = users);
+   }*/
 }

@@ -53,7 +53,7 @@ export class AuthComponent implements OnInit {
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.authenticationService.login(this.loginForm.value)
       .pipe(first())
       .subscribe(
         data => {
