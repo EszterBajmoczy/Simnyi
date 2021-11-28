@@ -1,3 +1,3 @@
 export class globals {
-  public static apiUrl: string = 'localhost:4200';
+  public static apiUrl: string = 'http://localhost:8080/api';
 }

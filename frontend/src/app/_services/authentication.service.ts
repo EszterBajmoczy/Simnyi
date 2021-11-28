@@ -20,26 +20,43 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
+  login(req: User) {
+    return this.http.post<any>(`${globals.apiUrl}/public/user/login`, req)
+      .pipe(map(res => {
+        console.log(res)
+        const user = new User();
+        user.username = req.username;
+        // user.token = res.header.get('Authorization');
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        this.currentUserSubject.next(user);
+        return user;
+      }));
+  }
+
   register(user: User) {
-    return this.http.post(`${globals.apiUrl}/user/register`, user);
+    return this.http.post(`${globals.apiUrl}/public/user/register`, user);
+  }
+
+  userUpdate(user: User) {
+    return this.http.patch(`${globals.apiUrl}/user/user-update`, user);
+  }
+
+  passwordUpdate(password: string){
+    return this.http.patch(`${globals.apiUrl}/user/password-update`, password);
+  }
+
+  deleteMe() {
+    return this.http.delete(`${globals.apiUrl}/user}`);
   }
 
   delete(name: string) {
     return this.http.delete(`${globals.apiUrl}/user/${name}`);
   }
 
-  getAll() {
-    return this.http.get<User[]>(`${globals.apiUrl}/user`);
+  registerAdmin(user: User) {
+    return this.http.post(`${globals.apiUrl}/admin/register`, user);
   }
 
-  login(username: string, password: string) {
-    return this.http.post<any>(`${globals.apiUrl}/user/authenticate`, {username, password})
-      .pipe(map(user => {
-        localStorage.setItem('currentUser', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        return user;
-      }));
-  }
 
   logout() {
     localStorage.removeItem('currentUser');
