@@ -13,7 +13,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CaffResponseDTO {
+public class CaffUpdateDTO {
 
     @NotNull
     private String id;
