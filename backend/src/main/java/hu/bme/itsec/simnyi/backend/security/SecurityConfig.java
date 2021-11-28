@@ -87,8 +87,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         List<String> enabledEndpoints = List.of(
                 String.format("%s/**", restApiDocPath),
                 String.format("%s/**", swaggerPath),
-                "/public/**",
-                "/caff/**"
+                "/public/**"
         );
 
 //      Set permissions on endpoints
