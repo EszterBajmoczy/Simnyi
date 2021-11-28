@@ -129,7 +129,7 @@ public class CaffService {
             result.setContent(data);
             return result;
         } catch (Exception e){
-            throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Error by getting bmp file with id: " + caffId);
+            throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Error by getting bmp file with id: " + caff.getId());
         }
     }
 
