@@ -148,4 +148,29 @@ public class CaffService {
         return IOUtils.toByteArray(resourceLoader.getResource(String.format("classpath:files/%s", name + "bmp")).getInputStream());
     }
 
+    public CaffDTO getTmpBmpByCaffId(@NotBlank String caffId) {
+        var path = Paths.get("src/main/resources/files/test.bmp");
+        try{
+            byte[] data = Files.readAllBytes(path);
+
+            var dto = new CaffDTO();
+            dto.setId(caffId);
+            dto.setContent(data);
+            dto.setName(caffId);
+            return dto;
+        } catch (Exception e){
+            throw new CustomHttpException(HttpStatus.BAD_REQUEST, "something wrong");
+        }
+    }
+
+    public List<CaffDTO> getTmpBmps(){
+        var list = new ArrayList<CaffDTO>();
+        list.add(getTmpBmpByCaffId("Test1111"));
+        list.add(getTmpBmpByCaffId("Test324"));
+        list.add(getTmpBmpByCaffId("ewrt"));
+        list.add(getTmpBmpByCaffId("alma"));
+        list.add(getTmpBmpByCaffId("Test111ghjg1"));
+        list.add(getTmpBmpByCaffId("sgfh"));
+        return list;
+    }
 }

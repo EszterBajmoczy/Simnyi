@@ -4,6 +4,7 @@ import hu.bme.itsec.simnyi.backend.model.Caff;
 import hu.bme.itsec.simnyi.backend.model.dto.CaffDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.CaffUpdateDTO;
 import hu.bme.itsec.simnyi.backend.service.CaffService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -51,5 +52,28 @@ public class CaffController {
     @GetMapping(path = "/public/caff/bmp")
     public ResponseEntity<List<CaffDTO>> getAllBmp(){
         return ResponseEntity.ok(caffService.getBmps());
+    }
+
+    //tmp!!!
+    @GetMapping(path = "/public/caff/tmp/bmp/{caffId}")
+    public ResponseEntity<CaffDTO> getTmpBmpByCaffId(@Validated @NotBlank @PathVariable(name = "caffId") String caffId){
+        return ResponseEntity.ok(caffService.getTmpBmpByCaffId(caffId));
+    }
+
+    @GetMapping(path = "/public/caff/tmp/bmp")
+    public ResponseEntity<List<CaffDTO>> getTmpAllBmp(){
+        return ResponseEntity.ok(caffService.getTmpBmps());
+    }
+
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping(path = "/caff/tmp/bmp/{caffId}")
+    public ResponseEntity<CaffDTO> getTmpBmpByCaffIdWithAuth(@Validated @NotBlank @PathVariable(name = "caffId") String caffId){
+        return ResponseEntity.ok(caffService.getTmpBmpByCaffId(caffId));
+    }
+
+    @SecurityRequirement(name = "Authorization")
+    @GetMapping(path = "/caff/tmp/bmp")
+    public ResponseEntity<List<CaffDTO>> getTmpAllBmpWithAuth(){
+        return ResponseEntity.ok(caffService.getTmpBmps());
     }
 }
