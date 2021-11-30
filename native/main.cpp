@@ -14,7 +14,7 @@ void readId(CaffBlock<T> &block) {
 }
 
 CaffBlock<CaffHeader> readCaffHeader() {
-    //    caff header always 30 byte;
+    //    caff header always 20 byte;
     CaffBlock<CaffHeader> result = CaffBlock<CaffHeader>();
     readId(result);
     inputFile.read((char *) &result.data.magic, 4);
@@ -52,12 +52,12 @@ Ciff readCiff() {
     }
     // tags
     uint64_t byteOfTags = ciff.header_size - uint64_t((4 + 8 + 8 + 8 + 8 + ciff.caption.length()));
-    for (int i = 0; i < byteOfTags; i++) {
+    for (uint64_t i = 0; i < byteOfTags; i++) {
         ciff.tags += (char) inputFile.get();
     }
     char tmp;
     // pixels
-    for (int i = 0; i < ciff.content_size; i++) {
+    for (uint64_t i = 0; i < ciff.content_size; i++) {
         inputFile.read(&tmp, 1);
         ciff.pixels.push_back(uint8_t(tmp));
     }
@@ -73,29 +73,33 @@ CaffBlock<CaffAnimation> readCaffAnimation() {
 }
 
 int main(int argc, char *argv[]) {
-
+    cout << "running";
     if (argv[1] == nullptr) {
-        cerr << "no input file name";
+        cerr << "no input file name" << endl;
         return 1;
     }
 
     if (argv[2] == nullptr) {
-        cerr << "no output file name";
+        cerr << "no output file name" << endl;
         return 2;
     }
 
     if (argc != 3) {
-        cerr << "unknown error";
+        cerr << "unknown error" << endl;
         return 3;
     }
+
+    cout << "Reading file started." << endl;
 
     inputFile.open(argv[1], ios::in | ios::binary);
     Caff caff;
     caff.caff_header = readCaffHeader();
     caff.caff_credits = readCaffCredits();
     caff.caff_animations = readCaffAnimation();
+    cout << "Caff read" << endl;
 
     bitmap(caff.caff_animations.data.ciff, argv[2]);
+    cout << "bitmap made" << endl;
     return 0;
 
 }
