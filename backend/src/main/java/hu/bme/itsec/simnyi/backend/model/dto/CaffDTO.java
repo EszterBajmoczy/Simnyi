@@ -22,7 +22,7 @@ public class CaffDTO {
     private String name;
 
     @NotNull
-    private byte[] content;
+    private String content;
 
     @NotNull
     private List<CommentDTO> comment;

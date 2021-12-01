@@ -17,18 +17,13 @@ import javax.validation.constraints.NotNull;
 @Service
 public class CommentService {
 
-    private static final Logger logger = LogManager.getLogger(CommentService.class.getSimpleName());
-
     private final JwtTokenUtil jwtTokenUtil;
-
-    private final UserRepository userRepository;
 
     private final CaffRepository caffRepository;
 
     private final CommentRepository commentRepository;
 
     public CommentService(CaffRepository caffRepository, CommentRepository commentRepository, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
-        this.userRepository = userRepository;
         this.jwtTokenUtil = jwtTokenUtil;
         this.caffRepository = caffRepository;
         this.commentRepository = commentRepository;
@@ -41,11 +36,10 @@ public class CommentService {
         if(dto.getNameOfUser() != null && !dto.getNameOfUser().isBlank() && !signedInUserName.equals(dto.getNameOfUser())){
             throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Username on the comment does not match with the signed in user's name.");
         }
-        var user = userRepository.findUserByUsername(signedInUserName).get();
 
         if(caff.isPresent()){
             var comment = new Comment();
-            comment.setNameOfUser(user);
+            comment.setNameOfUser(signedInUserName);
             comment.setContent(dto.getContent());
             comment.setCaffId(caff.get().getId());
             var c = commentRepository.save(comment);
