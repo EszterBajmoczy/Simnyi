@@ -7,6 +7,7 @@ import hu.bme.itsec.simnyi.backend.model.dto.CaffDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.CaffUpdateDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.CommentDTO;
 import hu.bme.itsec.simnyi.backend.repository.CaffRepository;
+import hu.bme.itsec.simnyi.backend.repository.CommentRepository;
 import hu.bme.itsec.simnyi.backend.repository.FileContentStore;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -41,12 +42,15 @@ public class CaffService {
 
     private final CaffRepository caffRepository;
 
+    private final CommentRepository commentRepository;
+
     private final ResourceLoader resourceLoader;
 
-    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, ResourceLoader resourceLoader) {
+    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, CommentRepository commentRepository, ResourceLoader resourceLoader) {
         this.fileContentStore = fileContentStore;
         this.caffRepository = caffRepository;
         this.resourceLoader = resourceLoader;
+        this.commentRepository = commentRepository;
     }
 
     public void create(@NotNull String name, MultipartFile multipartFile) {
@@ -85,8 +89,10 @@ public class CaffService {
             //at modify there is no option to add a new comment, just to remove it!
             var commentList = new ArrayList<Comment>();
             for(var c : caff.getComment()){
-                if(dto.getComment().contains(c)){
+                if(dto.getComment().stream().anyMatch(r -> r.getId().equals(c.getId()))){
                     commentList.add(c);
+                } else {
+                    commentRepository.delete(c);
                 }
                 //TODO Check if the comment will also delete, not just removed from the list
             }
@@ -98,7 +104,7 @@ public class CaffService {
     }
 
     public MultipartFile findCaffById(@NotBlank String caffId) {
-        var caff = caffRepository.findCaffByName(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
+        var caff = caffRepository.findById(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
         var name = caff.getName();
         caff.setName(caff.getId());
         try {
@@ -113,13 +119,15 @@ public class CaffService {
     }
 
     public CaffDTO getBmpByCaffId(@NotBlank String caffId) {
-        var caff = caffRepository.findCaffByName(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
+        var caff = caffRepository.findById(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
         return getBmpByCaff(caff);
     }
 
     public CaffDTO getBmpByCaff(Caff caff) {
         try{
-            var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath();
+            var name = caff.getName();
+            caff.setName(caff.getId());
+            var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
             var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
             var path = Paths.get(bmpFileFullPath);
             byte[] data = Files.readAllBytes(path);
@@ -129,14 +137,14 @@ public class CaffService {
             var cList = new ArrayList<CommentDTO>();
             for(var c : caff.getComment()){
                 var comment = new CommentDTO();
-                comment.setCaffId(c.getCaff().getId());
+                comment.setCaffId(c.getCaffId());
                 comment.setContent(c.getContent());
                 comment.setNameOfUser(c.getNameOfUser().getUsername());
                 comment.setId(c.getId());
                 cList.add(comment);
             }
             result.setComment(cList);
-            result.setName(caff.getName());
+            result.setName(name);
             result.setId(caff.getId());
             result.setContent(data);
             return result;
