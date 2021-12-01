@@ -12,11 +12,15 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.tomcat.util.http.fileupload.FileItem;
+import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -51,23 +55,22 @@ public class CaffService {
         caff.setMimeType("CAFF");
         caff.setContentLength(multipartFile.getSize());
         try {
-            caff = fileContentStore.setContent(caff, multipartFile.getResource().getInputStream());
             caff.setContentId(StringUtils.isBlank(caff.getContentId()) ? name : caff.getContentId());
-            caffRepository.save(caff);
-            var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath();
-            var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
+            var c = caffRepository.save(caff);
+            c.setName(c.getId());
+            caff = fileContentStore.setContent(c, multipartFile.getResource().getInputStream());
+            var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
+            var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf("."));
             var processBuilder = new ProcessBuilder(
                     "parser.exe",
-                    fileContentStore.getResource(caff).getURI().getPath(),
+                    savedCaffFileFullPath,
                     bmpFileFullPath);
             processBuilder.directory(new File("."));
             var process = processBuilder.start();
-            process.waitFor(5, TimeUnit.SECONDS);
-            // FIXME parser call rossz a exe, nem fut, nemtudom helpme
-
+            process.waitFor(10, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
             logger.error(e);
-            throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+            throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Error by uploading caff: " + e.getMessage());
         }
     }
 
@@ -94,10 +97,19 @@ public class CaffService {
         //TODO modify bmp too!!!!
     }
 
-    public Caff findCaffById(@NotBlank String caffId) {
-        var result = caffRepository.findCaffByName(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
-        //TODO
-        return result;
+    public MultipartFile findCaffById(@NotBlank String caffId) {
+        var caff = caffRepository.findCaffByName(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
+        var name = caff.getName();
+        caff.setName(caff.getId());
+        try {
+            var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
+            var path = Paths.get(savedCaffFileFullPath);
+            var data = Files.readAllBytes(path);
+            return new MockMultipartFile(name, data);
+        } catch (IOException e) {
+            logger.error(e);
+            throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Error by getting caff with id: " + caffId + " msg: " + e.getMessage());
+        }
     }
 
     public CaffDTO getBmpByCaffId(@NotBlank String caffId) {
