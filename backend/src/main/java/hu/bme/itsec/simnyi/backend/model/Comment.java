@@ -19,7 +19,7 @@ public class Comment {
 
     private User nameOfUser;
 
-    private Caff caff;
+    private String caffId;
 
     private String content;
 
