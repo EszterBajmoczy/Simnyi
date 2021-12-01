@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
@@ -6,6 +6,7 @@ import {first} from 'rxjs/operators';
 import {AlertService} from '../_services/alert.service';
 import {AuthenticationService} from '../_services/authentication.service';
 import {MatNativeDateModule} from '@angular/material/core';
+import {MatSidenav} from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-auth',
@@ -19,6 +20,7 @@ export class AuthComponent implements OnInit {
   registerLoading = false;
   submitted = false;
   returnUrl: string | undefined;
+  @ViewChild('sidenav') sidenav: MatSidenav | undefined;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -88,4 +90,5 @@ export class AuthComponent implements OnInit {
           this.registerLoading = false;
         });
   }
+
 }
