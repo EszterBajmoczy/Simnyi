@@ -1,7 +1,6 @@
 package hu.bme.itsec.simnyi.backend.controller;
 
 import hu.bme.itsec.simnyi.backend.model.Role;
-import hu.bme.itsec.simnyi.backend.model.dto.PasswordDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.UserDTO;
 import hu.bme.itsec.simnyi.backend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;

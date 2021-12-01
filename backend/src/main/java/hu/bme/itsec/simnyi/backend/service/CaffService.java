@@ -13,15 +13,10 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.tomcat.util.http.fileupload.FileItem;
-import org.apache.tomcat.util.http.fileupload.disk.DiskFileItem;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
-import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -44,12 +40,9 @@ public class CaffService {
 
     private final CommentRepository commentRepository;
 
-    private final ResourceLoader resourceLoader;
-
-    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, CommentRepository commentRepository, ResourceLoader resourceLoader) {
+    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, CommentRepository commentRepository) {
         this.fileContentStore = fileContentStore;
         this.caffRepository = caffRepository;
-        this.resourceLoader = resourceLoader;
         this.commentRepository = commentRepository;
     }
 
@@ -94,16 +87,14 @@ public class CaffService {
                 } else {
                     commentRepository.delete(c);
                 }
-                //TODO Check if the comment will also delete, not just removed from the list
             }
             caff.setComment(commentList);
         }
 
         caffRepository.save(caff);
-        //TODO modify bmp too!!!!
     }
 
-    public MultipartFile findCaffById(@NotBlank String caffId) {
+    public String findCaffById(@NotBlank String caffId) {
         var caff = caffRepository.findById(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
         var name = caff.getName();
         caff.setName(caff.getId());
@@ -111,7 +102,7 @@ public class CaffService {
             var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
             var path = Paths.get(savedCaffFileFullPath);
             var data = Files.readAllBytes(path);
-            return new MockMultipartFile(name, data);
+            return Base64.getEncoder().encodeToString(data);
         } catch (IOException e) {
             logger.error(e);
             throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Error by getting caff with id: " + caffId + " msg: " + e.getMessage());
@@ -131,7 +122,7 @@ public class CaffService {
             var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
             var path = Paths.get(bmpFileFullPath);
             byte[] data = Files.readAllBytes(path);
-
+            var content = Base64.getEncoder().encodeToString(data);
             var result = new CaffDTO();
 
             var cList = new ArrayList<CommentDTO>();
@@ -139,14 +130,14 @@ public class CaffService {
                 var comment = new CommentDTO();
                 comment.setCaffId(c.getCaffId());
                 comment.setContent(c.getContent());
-                comment.setNameOfUser(c.getNameOfUser().getUsername());
+                comment.setNameOfUser(c.getNameOfUser());
                 comment.setId(c.getId());
                 cList.add(comment);
             }
             result.setComment(cList);
             result.setName(name);
             result.setId(caff.getId());
-            result.setContent(data);
+            result.setContent(content);
             return result;
         } catch (Exception e){
             throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Error by getting bmp file with id: " + caff.getId());
@@ -164,33 +155,13 @@ public class CaffService {
         return result;
     }
 
-    private byte[] readBMP(String name) throws IOException {
-        return IOUtils.toByteArray(resourceLoader.getResource(String.format("classpath:files/%s", name + "bmp")).getInputStream());
-    }
-
-    public CaffDTO getTmpBmpByCaffId(@NotBlank String caffId) {
-        var path = Paths.get("src/main/resources/files/test.bmp");
-        try{
-            byte[] data = Files.readAllBytes(path);
-
-            var dto = new CaffDTO();
-            dto.setId(caffId);
-            dto.setContent(data);
-            dto.setName(caffId);
-            return dto;
-        } catch (Exception e){
-            throw new CustomHttpException(HttpStatus.BAD_REQUEST, "something wrong");
+    public void delete(String caffId) {
+        var caff = caffRepository.findById(caffId);
+        if(caff != null){
+            for(var c : caff.get().getComment()){
+                commentRepository.delete(c);
+            }
+            caffRepository.deleteById(caffId);
         }
-    }
-
-    public List<CaffDTO> getTmpBmps(){
-        var list = new ArrayList<CaffDTO>();
-        list.add(getTmpBmpByCaffId("Test1111"));
-        list.add(getTmpBmpByCaffId("Test324"));
-        list.add(getTmpBmpByCaffId("ewrt"));
-        list.add(getTmpBmpByCaffId("alma"));
-        list.add(getTmpBmpByCaffId("Test111ghjg1"));
-        list.add(getTmpBmpByCaffId("sgfh"));
-        return list;
     }
 }
