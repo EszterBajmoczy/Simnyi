@@ -26,38 +26,38 @@
       Register
     </button>
   </div>
-</form>
+
 
 <!--  Zoli things -->
-    <div>
-      <mat-card>
-        <mat-card-content>
-          <form> <!--[formGroup]="form" (ngSubmit)="onSubmit()"-->
-            <h2>Login</h2>
-            <mat-error> <!-- *ngIf="loginInvalid"-->
-              The username and password were not recognized
+  <div>
+    <mat-card>
+      <mat-card-content>
+        <form> <!--[formGroup]="form" (ngSubmit)="onSubmit()"-->
+          <h2>Login</h2>
+          <mat-error> <!-- *ngIf="loginInvalid"-->
+            The username and password were not recognized
+          </mat-error>
+          <mat-form-field class="full-width-input">
+            <input matInput placeholder="Username" formControlName="username" required>
+            <mat-error>
+              Please provide a registered username
             </mat-error>
-            <mat-form-field class="full-width-input">
-              <input matInput placeholder="Username" formControlName="username" required>
-              <mat-error>
-                Please provide a registered username
-              </mat-error>
-            </mat-form-field>
-            <mat-form-field class="full-width-input">
-              <input matInput type="password" placeholder="Password" formControlName="password" required>
-              <mat-error>
-                Please provide a valid password
-              </mat-error>
-            </mat-form-field>
-            <button style="margin-right:2.5em" mat-raised-button color="primary">Login</button>
-            <button mat-raised-button color="primary">Register</button>
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <input matInput type="password" placeholder="Password" formControlName="password" required>
+            <mat-error>
+              Please provide a valid password
+            </mat-error>
+          </mat-form-field>
+          <button style="margin-right:2.5em" mat-raised-button color="primary">Login</button>
+          <button mat-raised-button color="primary">Register</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
 
 <!--Profile-->
-<div>
   <h2>Profile settings</h2>
   <p>You can set your new password here.</p>
   <mat-form-field style="width:15vw; margin-left:2.5em" class="full-width-input">
@@ -67,4 +67,46 @@
     </mat-error>
   </mat-form-field>
   <button style="margin-left:2.5em" mat-raised-button color="primary">Change password</button>
-</div>
+
+
+<!--Main-->
+  <h2>Caff store</h2>
+  <p>You can look at the CAFF files here. Select one to see the details of a CAFF file.</p>
+
+  <mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+    <!--- Note that these columns can be defined in any order.
+          The actual rendered columns are set as a property on the row definition" -->
+
+    <!-- Name Column -->
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{item.name}} </mat-cell>
+    </ng-container>
+
+    <!-- Comment number Column -->
+    <ng-container matColumnDef="comment count">
+      <mat-header-cell *matHeaderCellDef> Comment count </mat-header-cell>
+      <mat-cell *matCellDef="let item"> {{item.commentCount}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
+
+  <button mat-raised-button color="primary">Upload</button>
+
+<!--CAFF-->
+  <h2>Caff page</h2>
+  <p>You can look at the CAFF file, download it or comment on it.</p>
+
+  <div class="row">
+    <div class="column">
+      <img src="https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6" alt="Girl in a jacket" width="600">
+    </div>
+    <div class="column">
+      Ez pedig a második oszlop.
+    </div>
+  </div>
+
+</form>
