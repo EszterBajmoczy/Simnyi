@@ -5,6 +5,7 @@ import {first} from 'rxjs/operators';
 
 import {AlertService} from '../_services/alert.service';
 import {AuthenticationService} from '../_services/authentication.service';
+import {MatNativeDateModule} from '@angular/material/core';
 
 @Component({
   selector: 'app-auth',
