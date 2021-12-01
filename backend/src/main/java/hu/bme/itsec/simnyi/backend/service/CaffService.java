@@ -57,7 +57,7 @@ public class CaffService {
             var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath();
             var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
             var processBuilder = new ProcessBuilder(
-                    "backend/native.exe",
+                    "parser.exe",
                     fileContentStore.getResource(caff).getURI().getPath(),
                     bmpFileFullPath);
             processBuilder.directory(new File("."));
