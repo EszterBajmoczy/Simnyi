@@ -13,6 +13,7 @@ import {AlertComponent} from './_components/alert.component';
 import { MainComponent } from './main/main.component';
 import { ProfileComponent } from './profile/profile.component';
 import {MatNativeDateModule} from "@angular/material/core";
+import {MatFormFieldModule} from '@angular/material/form-field';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {MatNativeDateModule} from "@angular/material/core";
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    MatFormFieldModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},
