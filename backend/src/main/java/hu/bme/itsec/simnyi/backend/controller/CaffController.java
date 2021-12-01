@@ -6,12 +6,14 @@ import hu.bme.itsec.simnyi.backend.model.dto.CaffUpdateDTO;
 import hu.bme.itsec.simnyi.backend.service.CaffService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.NonNull;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -26,7 +28,7 @@ public class CaffController {
         this.caffService = caffService;
     }
 
-    @PostMapping(path = "/caff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "public/caff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> upload(@Validated @NonNull @RequestParam(name = "name") String name,
                                        @Validated @NonNull @RequestBody MultipartFile file) {
         caffService.create(name, file);
@@ -39,9 +41,12 @@ public class CaffController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/caff/{caffId}")
-    public ResponseEntity<Caff> findCaffById(@Validated @NotBlank @PathVariable(name = "caffId") String caffId){
-        return ResponseEntity.ok(caffService.findCaffById(caffId));
+    @GetMapping(path = "/public/caff/{caffId}", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Resource> downloadCaffById(@Validated @NotBlank @PathVariable(name = "caffId") String caffId){
+        var multipartFile = caffService.findCaffById(caffId);
+        return ResponseEntity.ok()
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(multipartFile.getResource());
     }
 
     @GetMapping(path = "/public/caff/bmp/{caffId}")
