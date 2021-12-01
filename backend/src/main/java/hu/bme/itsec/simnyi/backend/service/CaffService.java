@@ -40,12 +40,9 @@ public class CaffService {
 
     private final CommentRepository commentRepository;
 
-    private final ResourceLoader resourceLoader;
-
-    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, CommentRepository commentRepository, ResourceLoader resourceLoader) {
+    public CaffService(FileContentStore fileContentStore, CaffRepository caffRepository, CommentRepository commentRepository) {
         this.fileContentStore = fileContentStore;
         this.caffRepository = caffRepository;
-        this.resourceLoader = resourceLoader;
         this.commentRepository = commentRepository;
     }
 
@@ -156,37 +153,6 @@ public class CaffService {
             result.add(bmp);
         }
         return result;
-    }
-
-    private byte[] readBMP(String name) throws IOException {
-        return IOUtils.toByteArray(resourceLoader.getResource(String.format("classpath:files/%s", name + "bmp")).getInputStream());
-    }
-
-    public CaffDTO getTmpBmpByCaffId(@NotBlank String caffId) {
-        var path = Paths.get("src/main/resources/files/test.bmp");
-        try{
-            byte[] data = Files.readAllBytes(path);
-            var content = Base64.getEncoder().encodeToString(data);
-
-            var dto = new CaffDTO();
-            dto.setId(caffId);
-            dto.setContent(content);
-            dto.setName(caffId);
-            return dto;
-        } catch (Exception e){
-            throw new CustomHttpException(HttpStatus.BAD_REQUEST, "something wrong");
-        }
-    }
-
-    public List<CaffDTO> getTmpBmps(){
-        var list = new ArrayList<CaffDTO>();
-        list.add(getTmpBmpByCaffId("Test1111"));
-        list.add(getTmpBmpByCaffId("Test324"));
-        list.add(getTmpBmpByCaffId("ewrt"));
-        list.add(getTmpBmpByCaffId("alma"));
-        list.add(getTmpBmpByCaffId("Test111ghjg1"));
-        list.add(getTmpBmpByCaffId("sgfh"));
-        return list;
     }
 
     public void delete(String caffId) {
