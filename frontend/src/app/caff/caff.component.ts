@@ -1,5 +1,4 @@
 import {Component, OnInit} from '@angular/core';
-import {first} from 'rxjs/operators';
 
 import {User} from '../_models/user';
 import {AuthenticationService} from '../_services/authentication.service';
@@ -11,7 +10,6 @@ import {AuthenticationService} from '../_services/authentication.service';
 })
 export class CaffComponent implements OnInit {
   currentUser: User;
-  users: User[] | undefined;
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -20,18 +18,6 @@ export class CaffComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.loadAllUsers();
   }
 
-  /* deleteUser(name: string) {
-     this.authenticationService.delete(name)
-       .pipe(first())
-       .subscribe(() => this.loadAllUsers());
-   }
-
-   private loadAllUsers() {
-     this.authenticationService.getAll()
-       .pipe(first())
-       .subscribe(users => this.users = users);
-   }*/
 }

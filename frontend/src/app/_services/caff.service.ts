@@ -4,7 +4,8 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {globals} from '../_helpers/globals';
 
 import {User} from '../_models/user';
-import {CaffUpdateDto} from '../_models/CaffUpdateDto';
+import {CaffUpdateDto} from '../_models/caffUpdateDto';
+import {CaffDto} from '../_models/caffDto';
 
 @Injectable({providedIn: 'root'})
 export class CaffService {
@@ -34,7 +35,7 @@ export class CaffService {
 
 
   getAllBmp() {
-    return this.http.get(`${globals.apiUrl}/public/caff/bmp`);
+    return this.http.get<CaffDto[]>(`${globals.apiUrl}/public/caff/bmp`);
   }
 
   getTmpBmpByCaffId(caffId : String) {
@@ -43,7 +44,7 @@ export class CaffService {
 
 
   getTmpAllBmp() {
-    return this.http.get(`${globals.apiUrl}/public/caff/tmp/bmp`);
+    return this.http.get<CaffDto[]>(`${globals.apiUrl}/public/caff/tmp/bmp`);
   }
 
   getTmpBmpByCaffIdWithAuth(caffId : String) {
