@@ -102,10 +102,20 @@
 
   <div class="row">
     <div class="column">
-      <img src="https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6" alt="Girl in a jacket" width="600">
+      <img src="https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6" alt="Girl in a jacket" style="width:35vw">
     </div>
     <div class="column">
-      Ez pedig a második oszlop.
+      <p>Name:</p>
+      <p>Comments:</p>
+      <mat-list role="list">
+        <mat-list-item role="listitem" *ngFor="let comment of otherDataSource">{{comment}}</mat-list-item>
+      </mat-list>
+      <mat-form-field style="width:25vw" class="full-width-input">
+        <input matInput placeholder="Add your comment here" formControlName="newComment" required>
+      </mat-form-field>
+      <button mat-raised-button color="primary">Submit</button>
+      <br>
+      <button style="margin-top: 2.5em" mat-raised-button color="primary">Download</button>
     </div>
   </div>
 

@@ -38,7 +38,7 @@ export class AuthComponent implements OnInit {
   //Zoli things
   displayedColumns: string[] = ['name', 'comment count'];
   dataSource = tmpData;
-  otherDataSource = testCaffData;
+  otherDataSource: string[] = ['Comment1', 'Comment2'];
 
   // @ts-ignore
   loginForm: FormGroup;
