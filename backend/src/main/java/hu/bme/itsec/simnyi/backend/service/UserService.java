@@ -61,10 +61,14 @@ public class UserService {
      * @return JWT token
      */
     public HttpHeaders login(UserDTO dto) {
-        Authentication authenticate = authenticationManager
-                .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), getDecodedPassword(dto.getPassword())));
-        var result = (User) authenticate.getPrincipal();
-        return jwtTokenUtil.createAuthorizationHeader(result);
+        try {
+            Authentication authenticate = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(dto.getUsername(), getDecodedPassword(dto.getPassword())));
+            var result = (User) authenticate.getPrincipal();
+            return jwtTokenUtil.createAuthorizationHeader(result);
+        } catch (Exception e){
+            throw new CustomHttpException(HttpStatus.CONFLICT, "User not existing: " + e.getMessage());
+        }
     }
 
     public boolean checkUsernamePassword(@NotBlank String username, @NotBlank String password) {
