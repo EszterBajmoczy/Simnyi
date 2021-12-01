@@ -44,15 +44,6 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String getUserId(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getSubject().split(",")[0];
-    }
-
     public String getUsernameFromToken(String token) {
         Claims claims = Jwts.parser()
                 .setSigningKey(jwtSecret)
@@ -69,15 +60,6 @@ public class JwtTokenUtil {
             logger.error(e.getMessage(), e);
             throw new CustomHttpException(HttpStatus.UNAUTHORIZED, e.getMessage());
         }
-    }
-
-    public Date getExpirationDate(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getExpiration();
     }
 
     public HttpHeaders createAuthorizationHeader(User user) {
