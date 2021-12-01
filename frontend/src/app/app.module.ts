@@ -10,13 +10,17 @@ import {AppComponent} from './app.component';
 import {CaffComponent} from './caff/caff.component';
 import {AuthComponent} from './auth/auth.component';
 import {AlertComponent} from './_components/alert.component';
+import { MainComponent } from './main/main.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AuthComponent,
     CaffComponent,
-    AlertComponent
+    AlertComponent,
+    MainComponent,
+    ProfileComponent
   ],
   imports: [
     BrowserModule,
