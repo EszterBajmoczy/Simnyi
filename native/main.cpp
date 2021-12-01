@@ -2,6 +2,7 @@
 #include "bitmap.cpp"
 #include <iterator>
 #include <algorithm>
+#include "exception"
 
 using namespace std;
 
@@ -18,6 +19,12 @@ CaffBlock<CaffHeader> readCaffHeader() {
     CaffBlock<CaffHeader> result = CaffBlock<CaffHeader>();
     readId(result);
     inputFile.read((char *) &result.data.magic, 4);
+    if (
+            result.data.magic[0] != 'C' ||
+            result.data.magic[1] != 'A' ||
+            result.data.magic[2] != 'F' ||
+            result.data.magic[3] != 'F')
+        throw exception();
     inputFile.read((char *) &result.data.header_size, 8);
     inputFile.read((char *) &result.data.num_anim, 8);
     return result;
@@ -40,15 +47,24 @@ CaffBlock<CaffCredits> readCaffCredits() {
 Ciff readCiff() {
     Ciff ciff = Ciff();
     inputFile.read(ciff.magic, 4);
+    string magicString;
+    if (
+            ciff.magic[0] != 'C' ||
+            ciff.magic[1] != 'I' ||
+            ciff.magic[2] != 'F' ||
+            ciff.magic[3] != 'F')
+        throw exception();
     inputFile.read((char *) &ciff.header_size, 8);
     inputFile.read((char *) &ciff.content_size, 8);
     inputFile.read((char *) &ciff.width, 8);
     inputFile.read((char *) &ciff.height, 8);
     // caption
-    char c = (char) inputFile.get();
-    while (c != '\n') {
+    char c;
+    while (!inputFile.get(c).eof()) {
         ciff.caption += c;
-        c = (char) inputFile.get();
+        if (c == '\n') {
+            break;
+        }
     }
     // tags
     uint64_t byteOfTags = ciff.header_size - uint64_t((4 + 8 + 8 + 8 + 8 + ciff.caption.length()));
@@ -73,7 +89,7 @@ CaffBlock<CaffAnimation> readCaffAnimation() {
 }
 
 int main(int argc, char *argv[]) {
-    cout << "running";
+    cout << "running" << endl;
     if (argv[1] == nullptr) {
         cerr << "no input file name" << endl;
         return 1;
@@ -85,17 +101,28 @@ int main(int argc, char *argv[]) {
     }
 
     if (argc != 3) {
-        cerr << "unknown error" << endl;
+        cerr << "Too much argument" << endl;
         return 3;
+    }
+
+    inputFile.open(argv[1], ios::in | ios::binary);
+    if (inputFile.fail()) {
+        cerr << "No input file" << endl;
+        return 4;
     }
 
     cout << "Reading file started." << endl;
 
-    inputFile.open(argv[1], ios::in | ios::binary);
     Caff caff;
-    caff.caff_header = readCaffHeader();
-    caff.caff_credits = readCaffCredits();
-    caff.caff_animations = readCaffAnimation();
+    try {
+        caff.caff_header = readCaffHeader();
+        caff.caff_credits = readCaffCredits();
+        caff.caff_animations = readCaffAnimation();
+    } catch (exception e) {
+        cerr << "The file is in a wrong format" << endl;
+        return 5;
+    }
+    inputFile.close();
     cout << "Caff read" << endl;
 
     bitmap(caff.caff_animations.data.ciff, argv[2]);
