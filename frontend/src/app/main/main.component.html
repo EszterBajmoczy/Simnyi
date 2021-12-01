@@ -1,7 +1,8 @@
 <h1>Hi {{currentUser.username}}!</h1>
 <ul>
   <li *ngFor="let bmp of bmps">
-    {{bmp.name}}
+
+    <a routerLink="/caff/{{bmp.id}}">{{bmp.name}}</a>
     <!-- <a (click)="deleteUser(user.username)" class="text-danger">Delete</a>-->
   </li>
 </ul>
