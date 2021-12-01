@@ -1,10 +1,33 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
 
 import {AlertService} from '../_services/alert.service';
 import {AuthenticationService} from '../_services/authentication.service';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatSidenav} from '@angular/material/sidenav';
+
+//Zoli things
+export interface CAFFTableTemplate {
+  name: string;
+  commentCount: number;
+}
+
+export interface CAFFTemplate {
+  name: string;
+  imgUrl: string;
+  comments: string[];
+}
+
+const tmpData: CAFFTableTemplate[] = [
+  {name: 'abc1', commentCount: 2},
+  {name: 'asd$3', commentCount: 12}
+];
+
+const testCaffData: CAFFTemplate[] = [
+  {name: 'abc1', imgUrl: "https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6", comments: ['Gut', 'Very good']}
+]
 
 @Component({
   selector: 'app-auth',
@@ -12,6 +35,11 @@ import {AuthenticationService} from '../_services/authentication.service';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
+  //Zoli things
+  displayedColumns: string[] = ['name', 'comment count'];
+  dataSource = tmpData;
+  otherDataSource: string[] = ['Comment1', 'Comment2'];
+
   // @ts-ignore
   loginForm: FormGroup;
   loading = false;
@@ -87,4 +115,5 @@ export class AuthComponent implements OnInit {
           this.registerLoading = false;
         });
   }
+
 }
