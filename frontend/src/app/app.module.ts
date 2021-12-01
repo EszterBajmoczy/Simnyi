@@ -12,6 +12,7 @@ import {AuthComponent} from './auth/auth.component';
 import {AlertComponent} from './_components/alert.component';
 import { MainComponent } from './main/main.component';
 import { ProfileComponent } from './profile/profile.component';
+import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ProfileComponent } from './profile/profile.component';
     CaffComponent,
     AlertComponent,
     MainComponent,
-    ProfileComponent
+    ProfileComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
