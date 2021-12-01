@@ -144,8 +144,8 @@ public class CaffService {
         }
     }
 
-    public List<CaffDTO> getBmps() {
-        var caffList = caffRepository.findAll();
+    public List<CaffDTO> getBmps(String searchInName) {
+        var caffList = searchInName.isBlank() ? caffRepository.findAll() : caffRepository.findByNameContaining(searchInName);
         var result = new ArrayList<CaffDTO>();
 
         for(var caff : caffList){
@@ -157,7 +157,7 @@ public class CaffService {
 
     public void delete(String caffId) {
         var caff = caffRepository.findById(caffId);
-        if(caff != null){
+        if(caff.isPresent()){
             for(var c : caff.get().getComment()){
                 commentRepository.delete(c);
             }
