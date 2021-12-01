@@ -48,12 +48,13 @@ public class UserService {
             user.setUsername(dto.getUsername());
             user.setPassword(getEncodedPassword(dto.getPassword()));
             user.setGrantedAuthority(role);
-            userRepository.save(user);
+            if(userRepository.findUserByUsername(user.getUsername()).isEmpty()) {
+                userRepository.save(user);
+            }
+            return HttpStatus.OK;
         } catch (Exception e) {
-            logger.error("reserved username", e);
-            return HttpStatus.CONFLICT;
+            throw new CustomHttpException(HttpStatus.CONFLICT, "Username is already taken.");
         }
-        return HttpStatus.OK;
     }
 
     /**
@@ -78,20 +79,10 @@ public class UserService {
         return new String(Base64.getDecoder().decode(password));
     }
 
-    public String passwordUpdate(String password) {
-        var encodedNewPassword = getEncodedPassword(password);
-        var samePassword = userRepository.existsByUsernameAndPassword("currentUsername", encodedNewPassword);
-        if(samePassword){
-            throw new CustomHttpException(HttpStatus.CONFLICT, "Ez nem új jelszó");
-        }
-        //FIXME getCurrentUser();
-        return "token";
-    }
-
     public HttpStatus userDataUpdate(UserDTO dto) {
         var user = userRepository.findUserByUsername(jwtTokenUtil.getCurrentUsername()).get();
 
-        if(dto.getUsername() != null && !dto.getUsername().equals(user.getUsername())){
+        if(dto.getUsername() != null && !dto.getUsername().equals(user.getUsername()) && userRepository.findUserByUsername(user.getUsername()).isEmpty()){
             user.setUsername(dto.getUsername());
         }
 
