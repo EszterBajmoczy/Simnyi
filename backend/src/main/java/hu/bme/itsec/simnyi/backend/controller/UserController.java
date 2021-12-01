@@ -48,15 +48,6 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "Authorization")
-    @DeleteMapping(path = "/user/delete")
-    public ResponseEntity<Void> delete(){
-        userService.delete();
-        return ResponseEntity
-                .ok()
-                .build();
-    }
-
-    @SecurityRequirement(name = "Authorization")
     @DeleteMapping(path = "/admin/delete/{username}")
     public ResponseEntity<Void> delete(@Validated @NotBlank @PathVariable("username") String username){
         userService.delete(username);
@@ -72,5 +63,4 @@ public class UserController {
                 .status(userService.register(dto, Role.ADMIN))
                 .build();
     }
-
 }
