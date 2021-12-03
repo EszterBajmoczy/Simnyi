@@ -1,7 +1,6 @@
 package hu.bme.itsec.simnyi.backend.controller;
 
 import hu.bme.itsec.simnyi.backend.model.Role;
-import hu.bme.itsec.simnyi.backend.model.dto.PasswordDTO;
 import hu.bme.itsec.simnyi.backend.model.dto.UserDTO;
 import hu.bme.itsec.simnyi.backend.service.UserService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -48,26 +47,6 @@ public class UserController {
     }
 
     @SecurityRequirement(name = "Authorization")
-    @PatchMapping(path = "/user/password-update")
-    public ResponseEntity<Void> passwordUpdate(@Validated @RequestBody PasswordDTO dto){
-        return ResponseEntity
-                .ok()
-                .header("Authorization", userService.passwordUpdate(dto.getPassword()))
-                .build();
-
-    }
-
-
-    @SecurityRequirement(name = "Authorization")
-    @DeleteMapping(path = "/user/delete")
-    public ResponseEntity<Void> delete(){
-        userService.delete();
-        return ResponseEntity
-                .ok()
-                .build();
-    }
-
-    @SecurityRequirement(name = "Authorization")
     @DeleteMapping(path = "/admin/delete/{username}")
     public ResponseEntity<Void> delete(@Validated @NotBlank @PathVariable("username") String username){
         userService.delete(username);
@@ -83,5 +62,4 @@ public class UserController {
                 .status(userService.register(dto, Role.ADMIN))
                 .build();
     }
-
 }

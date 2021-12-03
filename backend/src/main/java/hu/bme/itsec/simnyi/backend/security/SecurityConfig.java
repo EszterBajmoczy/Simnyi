@@ -96,6 +96,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(enabledEndpoints.toArray(String[]::new)).permitAll()
                     .antMatchers("/admin/delete/**").hasAuthority(Role.ADMIN.getAuthority())
                     .antMatchers("/admin/register").hasAuthority(Role.ADMIN.getAuthority())
+                    .antMatchers("/caff/delete").hasAuthority(Role.ADMIN.getAuthority())
+                    .antMatchers("/caff/modify").hasAuthority(Role.ADMIN.getAuthority())
                     // Our private endpoints
                     .anyRequest().authenticated();
         } else {

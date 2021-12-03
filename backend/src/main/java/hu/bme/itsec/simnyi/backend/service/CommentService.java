@@ -4,6 +4,7 @@ import hu.bme.itsec.simnyi.backend.exception.CustomHttpException;
 import hu.bme.itsec.simnyi.backend.model.Comment;
 import hu.bme.itsec.simnyi.backend.model.dto.CommentDTO;
 import hu.bme.itsec.simnyi.backend.repository.CaffRepository;
+import hu.bme.itsec.simnyi.backend.repository.CommentRepository;
 import hu.bme.itsec.simnyi.backend.repository.UserRepository;
 import hu.bme.itsec.simnyi.backend.security.JwtTokenUtil;
 import org.apache.logging.log4j.LogManager;
@@ -16,35 +17,33 @@ import javax.validation.constraints.NotNull;
 @Service
 public class CommentService {
 
-    private static final Logger logger = LogManager.getLogger(CommentService.class.getSimpleName());
-
     private final JwtTokenUtil jwtTokenUtil;
-
-    private final UserRepository userRepository;
 
     private final CaffRepository caffRepository;
 
-    public CommentService(CaffRepository caffRepository, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
-        this.userRepository = userRepository;
+    private final CommentRepository commentRepository;
+
+    public CommentService(CaffRepository caffRepository, CommentRepository commentRepository, UserRepository userRepository, JwtTokenUtil jwtTokenUtil) {
         this.jwtTokenUtil = jwtTokenUtil;
         this.caffRepository = caffRepository;
+        this.commentRepository = commentRepository;
     }
 
     public void createComment(@NotNull CommentDTO dto){
         var caff = caffRepository.findById(dto.getCaffId());
         var signedInUserName = jwtTokenUtil.getCurrentUsername();
 
-        if(!dto.getNameOfUser().isBlank() && !signedInUserName.equals(dto.getNameOfUser())){
+        if(dto.getNameOfUser() != null && !dto.getNameOfUser().isBlank() && !signedInUserName.equals(dto.getNameOfUser())){
             throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Username on the comment does not match with the signed in user's name.");
         }
-        var user = userRepository.findUserByUsername(signedInUserName).get();
 
         if(caff.isPresent()){
             var comment = new Comment();
-            comment.setNameOfUser(user);
+            comment.setNameOfUser(signedInUserName);
             comment.setContent(dto.getContent());
-            comment.setCaff(caff.get());
-            caff.get().getComment().add(new Comment());
+            comment.setCaffId(caff.get().getId());
+            var c = commentRepository.save(comment);
+            caff.get().getComment().add(c);
             caffRepository.save(caff.get());
         } else {
             throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Caff not found with id: " + dto.getCaffId());
