@@ -31,6 +31,10 @@ public class CaffController {
     @PostMapping(path = "caff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<Void> upload(@Validated @NonNull @RequestParam(name = "name") String name,
                                        @Validated @NonNull @RequestBody MultipartFile file) {
+        if(file == null) {
+            return ResponseEntity.badRequest().build();
+        }
+
         caffService.create(name, file);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +63,12 @@ public class CaffController {
     }
 
     @GetMapping(path = "/caff/bmp/search/{searchInName}")
-    public ResponseEntity<List<CaffDTO>> getAllBmp(@PathVariable(name = "searchInName") String searchInName){
+    public ResponseEntity<List<CaffDTO>> searchAllBmp(@PathVariable(name = "searchInName") String searchInName){
         return ResponseEntity.ok(caffService.getBmps(searchInName));
+    }
+
+    @GetMapping(path = "/caff/bmp")
+    public ResponseEntity<List<CaffDTO>> getAllBmp(){
+        return ResponseEntity.ok(caffService.getAllBmps());
     }
 }

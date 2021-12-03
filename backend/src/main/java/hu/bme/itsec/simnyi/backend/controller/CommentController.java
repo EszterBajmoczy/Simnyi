@@ -23,6 +23,9 @@ public class CommentController {
     @SecurityRequirement(name = "Authorization")
     @PostMapping(path = "/comment")
     public ResponseEntity<Void> upload(@Validated @NonNull @RequestBody CommentDTO comment) {
+        if(comment.getCaffId() == null || comment.getContent() == null){
+            return ResponseEntity.badRequest().build();
+        }
         commentService.createComment(comment);
         return ResponseEntity.ok().build();
     }
