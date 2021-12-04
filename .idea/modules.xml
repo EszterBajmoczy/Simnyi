@@ -4,7 +4,6 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/backend/simnyi.backend.iml" filepath="$PROJECT_DIR$/backend/simnyi.backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/frontend/simnyi.frontend.iml" filepath="$PROJECT_DIR$/frontend/simnyi.frontend.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/szamitogep-biztonsag.iml" filepath="$PROJECT_DIR$/.idea/szamitogep-biztonsag.iml" />
     </modules>
   </component>
 </project>
