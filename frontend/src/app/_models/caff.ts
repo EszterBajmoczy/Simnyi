@@ -4,7 +4,7 @@ export class Caff {
   id!: string;
   name!: string;
   comment!: Comment[];
-  contentId?: string;
+  content?: string;
   contentLength?: number;
   mimeType?: string;
 }

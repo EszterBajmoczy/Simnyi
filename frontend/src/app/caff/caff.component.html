@@ -5,7 +5,7 @@
 
 <div class="row" *ngIf="bmp != null">
   <div class="column">
-    <img src="https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6" alt="Girl in a jacket" style="width:35vw">
+    <img [src]="image" alt="image: {{bmp.name}}" style="width:35vw">
   </div>
   <div class="column">
     <h2>Name: {{bmp.name}}</h2>
@@ -27,6 +27,6 @@
       <button mat-raised-button color="primary" (click)="comment()">Submit</button>
     </form>
     <br/>
-    <button style="margin-top: 2.5em" mat-raised-button color="primary">Download</button>
+    <a style="margin-top: 2.5em" mat-raised-button color="primary" download="{{bmp.id}}.bmp" [href]="image">Download</a>
   </div>
 </div>

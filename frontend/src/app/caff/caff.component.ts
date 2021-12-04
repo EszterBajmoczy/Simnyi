@@ -9,6 +9,7 @@ import {first} from 'rxjs/operators';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CommentService} from '../_services/comment.service';
 import {Comment} from '../_models/comment';
+import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
   selector: 'app-caff',
@@ -20,6 +21,7 @@ export class CaffComponent implements OnInit {
   currentUser: User;
   id: string | undefined;
   bmp: Caff | undefined;
+  image: any;
   error: any = {message: undefined};
 
 
@@ -29,6 +31,7 @@ export class CaffComponent implements OnInit {
     private authenticationService: AuthenticationService,
     private caffService: CaffService,
     private commentService: CommentService,
+    private sanitizer: DomSanitizer
   ) {
     this.currentUser = this.authenticationService.currentUserValue;
     this.route.params.subscribe( params => this.id = params['id'] );
@@ -46,7 +49,11 @@ export class CaffComponent implements OnInit {
   }
 
   private loadBmp() {
-    this.caffService.getBmpByCaffId(this.id!!).subscribe(res => {this.bmp = res; console.log(res)});
+    this.caffService.getBmpByCaffId(this.id!!).subscribe(res => {
+      this.bmp = res;
+      let objectURL = 'data:image/bmp;base64,' + this.bmp.content;
+      this.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    });
   }
 
   comment() {

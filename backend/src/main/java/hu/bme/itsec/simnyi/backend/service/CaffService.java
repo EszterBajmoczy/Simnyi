@@ -123,6 +123,9 @@ public class CaffService {
             var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
             var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
             var path = Paths.get(bmpFileFullPath);
+            if(!path.toFile().exists()){
+                logger.error("FILE_NOT_FOUND: " + savedCaffFileFullPath);
+            }
             byte[] data = Files.readAllBytes(path);
             var content = Base64.getEncoder().encodeToString(data);
             var result = new CaffDTO();
