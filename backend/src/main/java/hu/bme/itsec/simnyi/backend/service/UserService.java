@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import javax.validation.constraints.NotBlank;
 import java.util.Base64;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class UserService {
@@ -44,17 +45,37 @@ public class UserService {
 
     public HttpStatus register(UserDTO dto, Role role) {
         try {
+            var psw = checkPsw(dto.getPassword());
+
+            if(!psw){
+                throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Incorrect password");
+            }
+
             var user = new User();
             user.setUsername(dto.getUsername());
             user.setPassword(getEncodedPassword(dto.getPassword()));
             user.setGrantedAuthority(role);
             if(userRepository.findUserByUsername(user.getUsername()).isEmpty()) {
                 userRepository.save(user);
+            } else {
+                throw new CustomHttpException(HttpStatus.CONFLICT, "Username is already taken.");
             }
             return HttpStatus.OK;
         } catch (Exception e) {
-            throw new CustomHttpException(HttpStatus.CONFLICT, "Username is already taken.");
+            throw new CustomHttpException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
+    }
+
+    private boolean checkPsw(String psw){
+        Pattern upperCasePatten = Pattern.compile("[A-Z ]");
+        Pattern lowerCasePatten = Pattern.compile("[a-z ]");
+        Pattern digitCasePatten = Pattern.compile("[0-9 ]");
+
+        return psw.length() >= 10 &&
+                upperCasePatten.matcher(psw).find() &&
+                lowerCasePatten.matcher(psw).find() &&
+                digitCasePatten.matcher(psw).find();
+
     }
 
     /**
@@ -67,12 +88,8 @@ public class UserService {
             var result = (User) authenticate.getPrincipal();
             return jwtTokenUtil.createAuthorizationHeader(result);
         } catch (Exception e){
-            throw new CustomHttpException(HttpStatus.CONFLICT, "User not existing: " + e.getMessage());
+            throw new CustomHttpException(HttpStatus.CONFLICT, "Login failed: " + e.getMessage());
         }
-    }
-
-    public boolean checkUsernamePassword(@NotBlank String username, @NotBlank String password) {
-        return userRepository.findUserByUsernameAndPassword(username, getEncodedPassword(password)).isPresent();
     }
 
     private String getEncodedPassword(@NotBlank String password){
@@ -86,7 +103,7 @@ public class UserService {
     public HttpStatus userDataUpdate(UserDTO dto) {
         var user = userRepository.findUserByUsername(jwtTokenUtil.getCurrentUsername()).get();
 
-        if(dto.getUsername() != null && !dto.getUsername().equals(user.getUsername()) && userRepository.findUserByUsername(user.getUsername()).isEmpty()){
+        if(dto.getUsername() != null && !dto.getUsername().equals(user.getUsername()) && userRepository.findUserByUsername(dto.getUsername()).isEmpty()){
             user.setUsername(dto.getUsername());
         }
 

@@ -21,8 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -96,7 +98,7 @@ public class CaffService {
 
     public String findCaffById(@NotBlank String caffId) {
         var caff = caffRepository.findById(caffId).orElseThrow(() -> new CustomHttpException(HttpStatus.NOT_FOUND, "Caff not found with id: " + caffId));
-        var name = caff.getName();
+
         caff.setName(caff.getId());
         try {
             var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
@@ -155,6 +157,17 @@ public class CaffService {
         return result;
     }
 
+    public List<CaffDTO> getAllBmps() {
+        var caffList = caffRepository.findAll();
+        var result = new ArrayList<CaffDTO>();
+
+        for(var caff : caffList){
+            var bmp = getBmpByCaff(caff);
+            result.add(bmp);
+        }
+        return result;
+    }
+
     public void delete(String caffId) {
         var caff = caffRepository.findById(caffId);
         if(caff.isPresent()){
@@ -162,6 +175,16 @@ public class CaffService {
                 commentRepository.delete(c);
             }
             caffRepository.deleteById(caffId);
+            caff.get().setName(caffId);
+            try{
+                var savedCaffFileFullPath = fileContentStore.getResource(caff.get()).getURI().getPath().substring(1);
+                var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf(".")) + ".bmp";
+
+                var t = new File(savedCaffFileFullPath).delete();
+                var s = new File(bmpFileFullPath).delete();
+            } catch (Exception e) {
+                throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Error by deleting files with id: " + caff.get().getId());
+            }
         }
     }
 }
