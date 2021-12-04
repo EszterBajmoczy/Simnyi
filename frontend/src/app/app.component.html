@@ -7,19 +7,17 @@
 </nav>
 
 // Zoli thing
-<md-toolbar>
-  <div class="md-toolbar-tools">
-    <md-button aria-label="Home" routerLink="/">
-      Home
-    </md-button>
-    <md-button aria-label="Profile" routerLink="/profile">
-      Profile
-    </md-button>
-    <md-button aria-label="Logout" (click)="logout()">
-      Logout
-    </md-button>
-  </div>>
-</md-toolbar>
+<mat-toolbar color="primary">
+  <button mat-button aria-label="Home" routerLink="/">
+    Home
+  </button>
+  <button mat-button aria-label="Profile" routerLink="/profile">
+    Profile
+  </button>
+  <button mat-button aria-label="Logout" (click)="logout()">
+    Logout
+  </button>
+</mat-toolbar>
 
 <!--<nav *ngIf="!currentUser" class="navbar navbar-expand navbar-dark bg-dark">
   <div class="navbar-nav">
