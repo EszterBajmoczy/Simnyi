@@ -1,2 +1,32 @@
-<h1>Hi {{currentUser.username}}!</h1>
-{{id}}
+<div *ngIf="bmp == null">Loading...</div>
+
+<h2>Caff page</h2>
+<p>You can look at the CAFF file, download it or comment on it.</p>
+
+<div class="row" *ngIf="bmp != null">
+  <div class="column">
+    <img src="https://us.123rf.com/450wm/derplan/derplan1801/derplan180100031/94537767-continuous-one-line-drawing-light-bulb-symbol-idea-the-inscription-idea-.jpg?ver=6" alt="Girl in a jacket" style="width:35vw">
+  </div>
+  <div class="column">
+    <h2>Name: {{bmp.name}}</h2>
+    <p>Comments:</p>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let comment of bmp.comment">{{comment.nameOfUser}}: {{comment.content}}</mat-list-item>
+    </mat-list>
+    <span *ngIf="bmp == null">Loading comments...</span>
+    <form (ngSubmit)="comment()" [formGroup]="commentForm">
+      <mat-form-field style="width:25vw" class="full-width-input">
+        <input matInput placeholder="Add your comment here" formControlName="comment" [ngModel]="commentForm.value.comment" required>
+        <mat-error *ngIf="f.comment.errors?.required">
+          Comment is required
+        </mat-error>
+        <mat-error *ngIf="error.message">
+          {{error.message}}
+        </mat-error>
+      </mat-form-field>
+      <button mat-raised-button color="primary" (click)="comment()">Submit</button>
+    </form>
+    <br/>
+    <button style="margin-top: 2.5em" mat-raised-button color="primary">Download</button>
+  </div>
+</div>

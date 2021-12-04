@@ -1,11 +1,12 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpEvent, HttpRequest} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {globals} from '../_helpers/globals';
 
 import {User} from '../_models/user';
 import {CaffUpdateDto} from '../_models/caffUpdateDto';
 import {CaffDto} from '../_models/caffDto';
+import {Caff} from '../_models/caff';
 
 @Injectable({providedIn: 'root'})
 export class CaffService {
@@ -26,20 +27,20 @@ export class CaffService {
   }
 
   findCaffById(caffId : String) {
-    return this.http.get(`${globals.apiUrl}/caff/${caffId}`);
+    return this.http.get<Caff>(`${globals.apiUrl}/caff/${caffId}`);
   }
 
   getBmpByCaffId(caffId : String) {
-    return this.http.get(`${globals.apiUrl}/public/caff/bmp/${caffId}`);
+    return this.http.get<Caff>(`${globals.apiUrl}/caff/bmp/${caffId}`);
   }
 
 
   getAllBmp() {
-    return this.http.get<CaffDto[]>(`${globals.apiUrl}/public/caff/bmp`);
+    return this.http.get<CaffDto[]>(`${globals.apiUrl}/caff/bmp`);
   }
 
-  getTmpBmpByCaffId(caffId : String) {
-    return this.http.get(`${globals.apiUrl}/public/caff/tmp/bmp/${caffId}`);
+  getTmpBmpByCaffId(caffId: string) {
+    return this.http.get<Caff>(`${globals.apiUrl}/public/caff/tmp/bmp/${caffId}`);
   }
 
 

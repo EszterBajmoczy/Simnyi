@@ -10,6 +10,7 @@ import {CaffService} from '../_services/caff.service';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+  displayedColumns: string[] = ['name', 'comment count'];
   currentUser: User;
   bmps: CaffDto[] | undefined;
 
@@ -25,7 +26,7 @@ export class MainComponent implements OnInit {
   }
 
   private loadAllBmp() {
-    this.caffService.getTmpAllBmp().subscribe(res => this.bmps = res);
+    this.caffService.getAllBmp().subscribe(res => this.bmps = res);
     console.log(this.bmps)
   }
 }

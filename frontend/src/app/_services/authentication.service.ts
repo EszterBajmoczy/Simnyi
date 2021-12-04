@@ -21,12 +21,11 @@ export class AuthenticationService {
   }
 
   login(req: User) {
-    return this.http.post<any>(`${globals.apiUrl}/public/user/login`, req)
-      .pipe(map(res => {
-        console.log(res)
+    return this.http.post<any>(`${globals.apiUrl}/public/user/login`, req, {observe: "response"})
+      .pipe(map(resp => {
         const user = new User();
         user.username = req.username;
-        // user.token = res.header.get('Authorization');
+        user.token = resp.headers.get('Authorization');
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;

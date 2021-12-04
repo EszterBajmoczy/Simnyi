@@ -1,1 +1,4 @@
-<p>upload works!</p>
+<h1>Upload File</h1>
+<input type="text" id="name" [value]="this.name">
+<input type="file" id="customFile" (change)="selectFile($event)">
+<button class="btn btn-primary" [disabled]="!selectedFiles" (click)="upload()">Save File</button>

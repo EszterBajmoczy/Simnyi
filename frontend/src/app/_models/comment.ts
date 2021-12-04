@@ -1,6 +1,6 @@
 export class Comment {
-  id!: string;
-  user!: string;
+  id?: string;
+  nameOfUser!: string;
   caffId!: string;
   content!: string;
 }

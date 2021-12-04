@@ -12,6 +12,7 @@ const routes: Routes = [
   {path: 'caff/:id', component: CaffComponent, canActivate: [AuthGuard]},
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'new', component: UploadComponent, canActivate: [AuthGuard]},
+  {path: 'upload', component: UploadComponent, canActivate: [AuthGuard]},
 
   {path: 'login', component: AuthComponent},
   {path: '**', redirectTo: ''}

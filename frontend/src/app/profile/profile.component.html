@@ -1,1 +1,11 @@
-<p>profile works!</p>
+<!--Profile-->
+<h2>Profile settings</h2>
+
+<p>You can set your new password here.</p>
+<mat-form-field style="width:15vw; margin-left:2.5em" class="full-width-input">
+  <input matInput type="password" placeholder="New password" formControlName="password" required>
+  <mat-error>
+    Please provide a valid password
+  </mat-error>
+</mat-form-field>
+<button style="margin-left:2.5em" mat-raised-button color="primary">Change password</button>

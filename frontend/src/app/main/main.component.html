@@ -1,8 +1,24 @@
 <h1>Hi {{currentUser.username}}!</h1>
-<ul>
-  <li *ngFor="let bmp of bmps">
 
-    <a routerLink="/caff/{{bmp.id}}">{{bmp.name}}</a>
-    <!-- <a (click)="deleteUser(user.username)" class="text-danger">Delete</a>-->
-  </li>
-</ul>
+<h2>Caff store</h2>
+<p>You can look at the CAFF files here. Select one to see the details of a CAFF file.</p>
+
+<p *ngIf="bmps == null">Loading data...</p>
+<mat-table [dataSource]="bmps" class="mat-elevation-z8" *ngIf="bmps != null">
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let item"><a routerLink="/caff/{{item.id}}">{{item.name}}</a></mat-cell>
+  </ng-container>
+
+  <!-- Comment number Column -->
+  <ng-container matColumnDef="comment count">
+    <mat-header-cell *matHeaderCellDef> Comment count </mat-header-cell>
+    <mat-cell *matCellDef="let item"> {{item.comment.length}} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+
+<button mat-raised-button color="primary" routerLink="new">Upload</button>
