@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpEvent, HttpRequest} from '@angular/common/http';
+import {HttpClient,  HttpHeaders} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {globals} from '../_helpers/globals';
 
@@ -18,8 +18,11 @@ export class CaffService {
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  upload(name: String, file: File) {
-    return this.http.post<any>(`${globals.apiUrl}/caff`, {name: name, file: file});
+  upload(name: String, file: String) {
+    const headers = new HttpHeaders({ enctype: 'multipart/form-data' });
+
+    // @ts-ignore
+    return this.http.post<any>(`${globals.apiUrl}/caff`, btoa(file), {headers: headers, params: {name: name}});
   }
 
   modify(dto : CaffUpdateDto) {

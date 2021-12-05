@@ -20,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -48,16 +46,18 @@ public class CaffService {
         this.commentRepository = commentRepository;
     }
 
-    public void create(@NotNull String name, MultipartFile multipartFile) {
+    public void create(@NotNull String name, String multipartFile) {
+        byte[] decodedBytes = Base64.getDecoder().decode(multipartFile.getBytes());
+        byte[] decodedBytes2 = Base64.getDecoder().decode(new String(decodedBytes).replace("data:application/octet-stream;base64,","").getBytes());
         var caff = new Caff();
         caff.setName(name);
         caff.setMimeType("CAFF");
-        caff.setContentLength(multipartFile.getSize());
+        caff.setContentLength(decodedBytes2.length);
         try {
             caff.setContentId(StringUtils.isBlank(caff.getContentId()) ? name : caff.getContentId());
             var c = caffRepository.save(caff);
             c.setName(c.getId());
-            caff = fileContentStore.setContent(c, multipartFile.getResource().getInputStream());
+            caff = fileContentStore.setContent(c, new ByteArrayInputStream(decodedBytes2));
             var savedCaffFileFullPath = fileContentStore.getResource(caff).getURI().getPath().substring(1);
             var bmpFileFullPath = savedCaffFileFullPath.substring(0, savedCaffFileFullPath.indexOf("."));
             var processBuilder = new ProcessBuilder(
