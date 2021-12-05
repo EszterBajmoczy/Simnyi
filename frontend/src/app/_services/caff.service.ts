@@ -23,7 +23,7 @@ export class CaffService {
   }
 
   modify(dto : CaffUpdateDto) {
-    return this.http.put(`${globals.apiUrl}/caff`, dto);
+    return this.http.put(`${globals.apiUrl}/caff/modify`, dto);
   }
 
   delete(caffId : String) {

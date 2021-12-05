@@ -4,7 +4,7 @@ import {BehaviorSubject, Observable} from 'rxjs';
 import {globals} from '../_helpers/globals';
 
 import {User} from '../_models/user';
-import {Comment} from '../_models/comment';
+import {CommentDto} from '../_models/commentDto';
 
 @Injectable({providedIn: 'root'})
 export class CommentService {
@@ -16,7 +16,7 @@ export class CommentService {
     this.currentUser = this.currentUserSubject.asObservable();
   }
 
-  comment(comment: Comment) {
+  comment(comment: CommentDto) {
     return this.http.post(`${globals.apiUrl}/comment`, comment);
   }
 

@@ -28,7 +28,7 @@ export class AuthenticationService {
         user.username = req.username;
         user.token = resp.headers.get('Authorization');
         const token = this.getDecodedAccessToken(user.token!);
-        user.admin = token.authorities[0] == "USER" //TODO change to admin
+        user.admin = token.authorities[0] === "ADMIN"
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;

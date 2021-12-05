@@ -1,4 +1,4 @@
-export class Comment {
+export class CommentDto {
   id?: string;
   nameOfUser!: string;
   caffId!: string;

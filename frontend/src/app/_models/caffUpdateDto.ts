@@ -1,10 +1,7 @@
 import {CommentDto} from './commentDto';
 
-export class Caff {
+export class CaffUpdateDto {
   id!: string;
   name!: string;
   comment!: CommentDto[];
-  content?: string;
-  contentLength?: number;
-  mimeType?: string;
 }

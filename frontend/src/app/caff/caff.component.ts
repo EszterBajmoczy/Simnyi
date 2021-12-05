@@ -8,7 +8,7 @@ import {Caff} from '../_models/caff';
 import {first} from 'rxjs/operators';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {CommentService} from '../_services/comment.service';
-import {Comment} from '../_models/comment';
+import {CommentDto} from '../_models/commentDto';
 import {DomSanitizer} from '@angular/platform-browser';
 
 @Component({
@@ -24,6 +24,7 @@ export class CaffComponent implements OnInit {
   image: any;
   caff: any;
   error: any = {message: undefined};
+  editingMode = false;
 
 
   constructor(
@@ -71,7 +72,7 @@ export class CaffComponent implements OnInit {
       return;
     }
 
-    let comment = new Comment();
+    let comment = new CommentDto();
     comment.caffId = this.bmp.id;
     comment.nameOfUser = this.currentUser.username;
     comment.content = this.commentForm.value.comment;
@@ -94,5 +95,23 @@ export class CaffComponent implements OnInit {
     this.caffService.delete(this.id!).subscribe(res => {
       this.router.navigate(['/']);
     });
+  }
+
+  modify() {
+    if(this.bmp!.name.length == 0)
+      return;
+    this.caffService.modify({id: this.bmp!.id, name: this.bmp!.name, comment: this.bmp!.comment}).subscribe(res => {
+      this.editingMode = false;
+    }, error =>{
+      console.log(error)
+    });
+  }
+
+  remove(comment: CommentDto) {
+    const index =  this.bmp!.comment.indexOf(comment, 0);
+    if (index > -1) {
+      this.bmp!.comment.splice(index, 1);
+    }
+    this.modify();
   }
 }
