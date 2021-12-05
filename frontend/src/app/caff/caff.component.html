@@ -1,4 +1,4 @@
-<div *ngIf="bmp == null">Loading...</div>
+<div *ngIf="bmp == null">Loading...<button *ngIf="currentUser.admin" (click)="delete()">remove file</button></div>
 
 <h2>Caff page</h2>
 <p>You can look at the CAFF file, download it or comment on it.</p>
@@ -11,6 +11,7 @@
     <h2>Name: {{bmp.name}}</h2>
     <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.bmp" [href]="image">Download image</a>
     <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.caff" [href]="caff">Download caff</a>
+    <button style="margin: 1em" mat-raised-button color="accent" *ngIf="currentUser.admin" (click)="delete()">Delete</button>
     <p>Comments:</p>
     <mat-list role="list">
       <mat-list-item role="listitem" *ngFor="let comment of bmp.comment">{{comment.nameOfUser}}: {{comment.content}}</mat-list-item>

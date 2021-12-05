@@ -26,6 +26,10 @@ export class CaffService {
     return this.http.put(`${globals.apiUrl}/caff`, dto);
   }
 
+  delete(caffId : String) {
+    return this.http.delete(`${globals.apiUrl}/caff/delete/${caffId}`);
+  }
+
   downloadCaffById(caffId : String) {
     // @ts-ignore
     return this.http.get<String>(`${globals.apiUrl}/caff/${caffId}`,{responseType: 'text'});

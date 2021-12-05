@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 
 import {User} from '../_models/user';
 import {AuthenticationService} from '../_services/authentication.service';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {CaffService} from '../_services/caff.service';
 import {Caff} from '../_models/caff';
 import {first} from 'rxjs/operators';
@@ -29,6 +29,7 @@ export class CaffComponent implements OnInit {
   constructor(
     private formBuilder: FormBuilder,
     private route: ActivatedRoute,
+    private router: Router,
     private authenticationService: AuthenticationService,
     private caffService: CaffService,
     private commentService: CommentService,
@@ -87,5 +88,11 @@ export class CaffComponent implements OnInit {
           console.log(error)
           this.error.message = error.message;
         });
+  }
+
+  delete() {
+    this.caffService.delete(this.id!).subscribe(res => {
+      this.router.navigate(['/']);
+    });
   }
 }

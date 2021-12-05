@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {globals} from '../_helpers/globals';
+import jwt_decode from 'jwt-decode';
 
 import {User} from '../_models/user';
 
@@ -26,10 +27,21 @@ export class AuthenticationService {
         const user = new User();
         user.username = req.username;
         user.token = resp.headers.get('Authorization');
+        const token = this.getDecodedAccessToken(user.token!);
+        user.admin = token.authorities[0] == "USER" //TODO change to admin
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
       }));
+  }
+
+  private getDecodedAccessToken(token: string): any {
+    try{
+      return jwt_decode(token);
+    }
+    catch(Error){
+      return null;
+    }
   }
 
   register(user: User) {
