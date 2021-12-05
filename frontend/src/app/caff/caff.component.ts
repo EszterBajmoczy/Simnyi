@@ -22,6 +22,7 @@ export class CaffComponent implements OnInit {
   id: string | undefined;
   bmp: Caff | undefined;
   image: any;
+  caff: any;
   error: any = {message: undefined};
 
 
@@ -42,6 +43,7 @@ export class CaffComponent implements OnInit {
       comment: ['', Validators.required]
     });
     this.loadBmp()
+    this.downloadCaff()
   }
 
   get f() {
@@ -53,6 +55,13 @@ export class CaffComponent implements OnInit {
       this.bmp = res;
       let objectURL = 'data:image/bmp;base64,' + this.bmp.content;
       this.image = this.sanitizer.bypassSecurityTrustUrl(objectURL);
+    });
+  }
+
+  downloadCaff() {
+    this.caffService.downloadCaffById(this.id!).subscribe(res => {
+      let objectURL = 'data:application/octet-stream;base64,' + res;
+      this.caff = this.sanitizer.bypassSecurityTrustUrl(objectURL);
     });
   }
 

@@ -26,8 +26,9 @@ export class CaffService {
     return this.http.put(`${globals.apiUrl}/caff`, dto);
   }
 
-  findCaffById(caffId : String) {
-    return this.http.get<Caff>(`${globals.apiUrl}/caff/${caffId}`);
+  downloadCaffById(caffId : String) {
+    // @ts-ignore
+    return this.http.get<String>(`${globals.apiUrl}/caff/${caffId}`,{responseType: 'text'});
   }
 
   getBmpByCaffId(caffId : String) {

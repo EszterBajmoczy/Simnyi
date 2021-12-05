@@ -9,6 +9,8 @@
   </div>
   <div class="column">
     <h2>Name: {{bmp.name}}</h2>
+    <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.bmp" [href]="image">Download image</a>
+    <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.caff" [href]="caff">Download caff</a>
     <p>Comments:</p>
     <mat-list role="list">
       <mat-list-item role="listitem" *ngFor="let comment of bmp.comment">{{comment.nameOfUser}}: {{comment.content}}</mat-list-item>
@@ -26,7 +28,5 @@
       </mat-form-field>
       <button mat-raised-button color="primary" (click)="comment()">Submit</button>
     </form>
-    <br/>
-    <a style="margin-top: 2.5em" mat-raised-button color="primary" download="{{bmp.id}}.bmp" [href]="image">Download</a>
   </div>
 </div>
