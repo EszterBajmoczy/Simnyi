@@ -49,15 +49,7 @@ export class AuthenticationService {
   }
 
   userUpdate(user: User) {
-    return this.http.patch(`${globals.apiUrl}/user/user-update`, user);
-  }
-
-  passwordUpdate(password: string){
-    return this.http.patch(`${globals.apiUrl}/user/password-update`, password);
-  }
-
-  deleteMe() {
-    return this.http.delete(`${globals.apiUrl}/user}`);
+    return this.http.put(`${globals.apiUrl}/user/user-update`, user);
   }
 
   delete(name: string) {
@@ -71,7 +63,6 @@ export class AuthenticationService {
 
   logout() {
     localStorage.removeItem('currentUser');
-    //TODO remove user token from db
 
     // @ts-ignore
     this.currentUserSubject.next(null);
