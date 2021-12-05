@@ -6,6 +6,9 @@
     Profile
   </button>
   <span style="width: inherit"></span>
+  <button mat-button aria-label="Admin" routerLink="/admin" *ngIf="currentUser.admin">
+    Admin
+  </button>
   <button mat-button routerLink="/profile">{{currentUser.username}}</button>
   <button mat-button aria-label="Logout" (click)="logout()">
     Logout

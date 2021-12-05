@@ -30,6 +30,8 @@ import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {MatCardModule} from '@angular/material/card';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
+import {MatExpansionModule} from '@angular/material/expansion';
+import { AdminComponent } from './admin/admin.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,8 @@ import {MatListModule} from '@angular/material/list';
     AlertComponent,
     MainComponent,
     ProfileComponent,
-    UploadComponent
+    UploadComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +66,8 @@ import {MatListModule} from '@angular/material/list';
     MatProgressSpinnerModule,
     MatSidenavModule,
     MatListModule,
-    FormsModule
+    FormsModule,
+    MatExpansionModule
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true},

@@ -6,6 +6,7 @@ import {AuthGuard} from './_helpers/auth.guard';
 import {MainComponent} from './main/main.component';
 import {ProfileComponent} from './profile/profile.component';
 import {UploadComponent} from './upload/upload.component';
+import {AdminComponent} from './admin/admin.component';
 
 const routes: Routes = [
   {path: '', component: MainComponent, canActivate: [AuthGuard]},
@@ -13,6 +14,7 @@ const routes: Routes = [
   {path: 'profile', component: ProfileComponent, canActivate: [AuthGuard]},
   {path: 'new', component: UploadComponent, canActivate: [AuthGuard]},
   {path: 'upload', component: UploadComponent, canActivate: [AuthGuard]},
+  {path: 'admin', component: AdminComponent, canActivate: [AuthGuard]},
 
   {path: 'login', component: AuthComponent},
   {path: '**', redirectTo: ''}

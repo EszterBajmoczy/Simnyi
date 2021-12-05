@@ -53,7 +53,7 @@ export class AuthenticationService {
   }
 
   delete(name: string) {
-    return this.http.delete(`${globals.apiUrl}/user/${name}`);
+    return this.http.delete(`${globals.apiUrl}/admin/delete/${name}`);
   }
 
   registerAdmin(user: User) {
