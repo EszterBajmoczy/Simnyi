@@ -2,6 +2,9 @@
 <p>You can look at the CAFF files here. Select one to see the details of a CAFF file.</p>
 
 <p *ngIf="bmps == null">Loading data...</p>
+<mat-form-field style="width:15vw; margin-left:2.5em" class="full-width-input">
+  <input matInput type="text" placeholder="Search by name" [(ngModel)]="searchText" (ngModelChange)="search()">
+</mat-form-field>
 <mat-table [dataSource]="bmps" class="mat-elevation-z8" *ngIf="bmps != null">
   <!-- Name Column -->
   <ng-container matColumnDef="name">

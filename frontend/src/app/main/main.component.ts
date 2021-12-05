@@ -12,7 +12,9 @@ import {CaffService} from '../_services/caff.service';
 export class MainComponent implements OnInit {
   displayedColumns: string[] = ['name', 'comment count'];
   currentUser: User;
+  allBmps: CaffDto[] | undefined;
   bmps: CaffDto[] | undefined;
+  searchText: string = "";
 
   constructor(
     private authenticationService: AuthenticationService,
@@ -26,7 +28,13 @@ export class MainComponent implements OnInit {
   }
 
   private loadAllBmp() {
-    this.caffService.getAllBmp().subscribe(res => this.bmps = res);
-    console.log(this.bmps)
+    this.caffService.getAllBmp().subscribe(res => {
+      this.allBmps = res;
+      this.bmps = this.allBmps;
+    });
+  }
+
+  search() {
+    this.bmps = this.allBmps!.filter(item => item.name.includes(this.searchText))
   }
 }

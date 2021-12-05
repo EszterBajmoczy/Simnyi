@@ -19,7 +19,7 @@ export class CaffService {
   }
 
   upload(name: String, file: File) {
-    return this.http.post(`${globals.apiUrl}/caff`, {name: name, file: file});
+    return this.http.post<any>(`${globals.apiUrl}/caff`, {name: name, file: file});
   }
 
   modify(dto : CaffUpdateDto) {
@@ -34,15 +34,19 @@ export class CaffService {
     return this.http.get<Caff>(`${globals.apiUrl}/caff/bmp/${caffId}`);
   }
 
-
   getAllBmp() {
     return this.http.get<CaffDto[]>(`${globals.apiUrl}/caff/bmp`);
   }
 
+  //unused
+  searchAllBmp(searchInName : String) {
+    return this.http.get<CaffDto[]>(`${globals.apiUrl}/caff/bmp/search/${searchInName}`);
+  }
+
+  /* unused
   getTmpBmpByCaffId(caffId: string) {
     return this.http.get<Caff>(`${globals.apiUrl}/public/caff/tmp/bmp/${caffId}`);
   }
-
 
   getTmpAllBmp() {
     return this.http.get<CaffDto[]>(`${globals.apiUrl}/public/caff/tmp/bmp`);
@@ -55,5 +59,5 @@ export class CaffService {
   getTmpAllBmpWithAuth() {
     return this.http.get(`${globals.apiUrl}/caff/tmp/bmp`);
   }
-
+*/
 }
