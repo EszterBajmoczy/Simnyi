@@ -22,7 +22,7 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field class="full-width-input">
-            <input matInput type="password" placeholder="Password" formControlName="password" required minlength="4" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"> <!-- TODO change minlength to 10 -->
+            <input matInput type="password" placeholder="Password" formControlName="password" required minlength="10" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
             <mat-error *ngIf="f.password.errors?.required">
               Password is required
             </mat-error>
