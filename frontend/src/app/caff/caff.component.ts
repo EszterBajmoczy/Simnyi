@@ -87,7 +87,7 @@ export class CaffComponent implements OnInit {
         },
         error => {
           console.log(error)
-          this.error.message = error.message;
+          this.error.message = error;
         });
   }
 

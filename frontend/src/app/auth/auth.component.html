@@ -30,8 +30,8 @@
               Min length is 10 character
             </mat-error>
           </mat-form-field>
-          <button style="margin-right:2.5em" mat-raised-button color="primary" (click)="login()" [disabled]="loading">Login</button>
-          <button mat-raised-button color="primary" (click)="register()" [disabled]="registerLoading || loading" ><span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Register</button>
+          <button style="margin-right:2.5em" mat-raised-button color="primary" [disabled]="loading">Login</button>
+          <button mat-raised-button color="accent" (click)="register()" [disabled]="registerLoading || loading" ><span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Register</button>
         </form>
       </mat-card-content>
     </mat-card>
