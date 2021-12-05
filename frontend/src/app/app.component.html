@@ -1,15 +1,25 @@
-<nav *ngIf="currentUser" class="navbar navbar-expand navbar-dark bg-dark">
-  <div class="navbar-nav">
-    <a class="nav-item nav-link" routerLink="/">Home</a>
-    <a (click)="logout()" class="nav-item nav-link">Logout</a>
-  </div>
-</nav>
+<mat-toolbar color="primary" *ngIf="currentUser">
+  <button mat-button aria-label="Home" routerLink="/">
+    Home
+  </button>
+  <button mat-button aria-label="Profile" routerLink="/profile">
+    Profile
+  </button>
+  <span style="width: inherit"></span>
+  <button mat-button aria-label="Admin" routerLink="/admin" *ngIf="currentUser.admin">
+    Admin
+  </button>
+  <button mat-button routerLink="/profile">{{currentUser.username}}</button>
+  <button mat-button aria-label="Logout" (click)="logout()">
+    Logout
+  </button>
+</mat-toolbar>
 
-<nav *ngIf="!currentUser" class="navbar navbar-expand navbar-dark bg-dark">
+<!--<nav *ngIf="!currentUser" class="navbar navbar-expand navbar-dark bg-dark">
   <div class="navbar-nav">
     Please login for more content.
   </div>
-</nav>
+</nav>-->
 
 <div class="jumbotron">
   <div class="container">

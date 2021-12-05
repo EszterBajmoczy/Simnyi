@@ -1,6 +1,6 @@
 export class User {
-  // @ts-ignore
-  username: string;
-  password: string | undefined;
-  token: string | undefined;
+  username!: string;
+  password?: string | null;
+  token?: string | null;
+  admin: boolean = false;
 }

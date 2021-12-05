@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-content>
+    <h2>Profile settings</h2>
+    <form (ngSubmit)="updateUser()" [formGroup]="userForm">
+      <mat-error *ngIf="error.message">
+        {{error.message}}
+      </mat-error>
+      <mat-form-field style="width:15vw; margin-left:2.5em" class="full-width-input">
+        <input matInput type="text" placeholder="Username" formControlName="username" [(ngModel)]="username">
+        <mat-error *ngIf="f.username.errors?.required">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field style="width:15vw; margin-left:2.5em" class="full-width-input">
+        <input matInput type="password" placeholder="New password" formControlName="password" minlength="10">
+        <mat-error *ngIf="f.password.errors?.minlength">
+          Min length is 10 character
+        </mat-error>
+      </mat-form-field>
+      <button style="margin: 1em;" mat-raised-button color="primary" (click)="updateUser()"
+              [disabled]="userForm.invalid">Change
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

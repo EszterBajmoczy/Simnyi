@@ -1,29 +1,38 @@
-<h2>Login</h2>
-<form (ngSubmit)="login()" [formGroup]="loginForm">
-  <div class="form-group">
-    <label for="username">Username</label>
-    <input [ngClass]="{ 'is-invalid': submitted && f.username.errors }" class="form-control" formControlName="username" id="username"
-           type="text"/>
-    <div *ngIf="submitted && f.username.errors" class="invalid-feedback">
-      <div *ngIf="f.username.errors.required">Username is required</div>
-    </div>
+  <div>
+    <mat-card>
+      <mat-card-content>
+        <form (ngSubmit)="login()" [formGroup]="loginForm">
+          <h2>Login</h2>
+          <mat-error *ngIf="error.loginInvalid">
+            The username and password were not recognized
+          </mat-error>
+          <mat-error *ngIf="error.usernameConflict">
+            Username is already taken.
+          </mat-error>
+          <mat-error *ngIf="error.notSecurePassword">
+            Not a secure enough password!
+          </mat-error>
+          <mat-error *ngIf="error.message">
+            {{error.message}}
+          </mat-error>
+          <mat-form-field class="full-width-input">
+            <input matInput placeholder="Username" formControlName="username" required [ngClass]="{ 'is-invalid': submitted && f.username.errors }">
+            <mat-error *ngIf="f.username.errors?.required">
+              Username is required
+            </mat-error>
+          </mat-form-field>
+          <mat-form-field class="full-width-input">
+            <input matInput type="password" placeholder="Password" formControlName="password" required minlength="10" [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+            <mat-error *ngIf="f.password.errors?.required">
+              Password is required
+            </mat-error>
+            <mat-error *ngIf="f.password.errors?.minlength">
+              Min length is 10 character
+            </mat-error>
+          </mat-form-field>
+          <button style="margin-right:2.5em" mat-raised-button color="primary" [disabled]="loading">Login</button>
+          <button mat-raised-button color="accent" (click)="register()" [disabled]="registerLoading || loading" ><span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>Register</button>
+        </form>
+      </mat-card-content>
+    </mat-card>
   </div>
-  <div class="form-group">
-    <label for="password">Password</label>
-    <input [ngClass]="{ 'is-invalid': submitted && f.password.errors }" class="form-control" formControlName="password" id="password"
-           type="password"/>
-    <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
-      <div *ngIf="f.password.errors.required">Password is required</div>
-    </div>
-  </div>
-  <div class="form-group">
-    <button (click)="login()" [disabled]="loading" class="btn btn-primary">
-      <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
-      Login
-    </button>
-    <button (click)="register()" [disabled]="registerLoading || loading" class="btn btn-secondary">
-      <span *ngIf="registerLoading" class="spinner-border spinner-border-sm mr-1"></span>
-      Register
-    </button>
-  </div>
-</form>

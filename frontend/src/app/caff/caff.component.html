@@ -1,8 +1,38 @@
-<h1>Hi {{currentUser.username}}!</h1>
-<h3>Users:</h3>
-<ul>
-  <li *ngFor="let user of users">
-    {{user.username}}
-    <!-- - <a (click)="deleteUser(user.username)" class="text-danger">Delete</a> -->
-  </li>
-</ul>
+<div *ngIf="bmp == null">Loading...<button *ngIf="currentUser.admin" (click)="delete()">remove file</button></div>
+
+<h2>Caff page</h2>
+<p>You can look at the CAFF file, download it or comment on it.</p>
+
+<div class="row" *ngIf="bmp != null">
+  <div class="column">
+    <img [src]="image" alt="image: {{bmp.name}}" style="width:35vw">
+  </div>
+  <div class="column">
+    <h2>Name: <span *ngIf="!editingMode" >{{bmp.name}} </span> <button mat-raised-button color="accent" *ngIf="!editingMode && currentUser.admin" (click)="editingMode = true">edit</button>
+      <mat-form-field *ngIf="editingMode"  style="width:15vw; margin-left:0.5em" class="full-width-input">
+        <input matInput type="text" placeholder="Edit name" [(ngModel)]="bmp.name" >
+      </mat-form-field>
+      <button *ngIf="editingMode" mat-raised-button color="primary" [disabled]="bmp.name.length == 0" (click)="modify()">save</button>
+    </h2>
+    <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.bmp" [href]="image">Download image</a>
+    <a style="margin: 1em" mat-raised-button color="primary" download="{{bmp.id}}.caff" [href]="caff">Download caff</a>
+    <button style="margin: 1em" mat-raised-button color="accent" *ngIf="currentUser.admin" (click)="delete()">Delete</button>
+    <p>Comments:</p>
+    <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let comment of bmp.comment">{{comment.nameOfUser}}: {{comment.content}} <button style="margin: 1em" mat-raised-button color="accent" *ngIf="currentUser.admin" (click)="remove(comment)">Remove</button></mat-list-item>
+    </mat-list>
+    <span *ngIf="bmp == null">Loading comments...</span>
+    <form (ngSubmit)="comment()" [formGroup]="commentForm" style="margin: 1em" >
+      <mat-form-field style="width:25vw" class="full-width-input">
+        <input matInput placeholder="Add your comment here" formControlName="comment" [ngModel]="commentForm.value.comment" required>
+        <mat-error *ngIf="f.comment.errors?.required">
+          Comment is required
+        </mat-error>
+        <mat-error *ngIf="error.message">
+          {{error.message}}
+        </mat-error>
+      </mat-form-field>
+      <button mat-raised-button color="primary" style="margin-left: 1em">Submit</button>
+    </form>
+  </div>
+</div>

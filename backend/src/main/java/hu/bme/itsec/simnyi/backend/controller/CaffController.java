@@ -28,9 +28,9 @@ public class CaffController {
         this.caffService = caffService;
     }
 
-    @PostMapping(path = "caff", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(path = "caff", consumes = MediaType.ALL_VALUE)
     public ResponseEntity<Void> upload(@Validated @NonNull @RequestParam(name = "name") String name,
-                                       @Validated @NonNull @RequestBody MultipartFile file) {
+                                       @Validated @NonNull @RequestBody String file) {
         if(file == null) {
             return ResponseEntity.badRequest().build();
         }

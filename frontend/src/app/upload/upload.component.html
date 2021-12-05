@@ -1,0 +1,25 @@
+<mat-card>
+  <mat-card-header><h2>Upload File</h2></mat-card-header>
+  <mat-card-content>
+<form (ngSubmit)="upload()" [formGroup]="uploadForm">
+  <mat-error *ngIf="error.message">
+    {{error.message}}
+  </mat-error>
+  <mat-form-field class="full-width-input">
+    <input matInput placeholder="Image name" formControlName="imageName" required>
+  </mat-form-field>
+
+  <input type="file" style="display: none" formControlName="file"
+         (change)="selectFile($event)" #fileUpload required>
+
+  <div class="file-upload">
+    {{fileName || "No file uploaded yet."}}
+    <button mat-mini-fab color="primary" class="upload-btn"
+            (click)="fileUpload.click()">
+      <mat-icon>attach_file</mat-icon>
+    </button>
+  </div>
+  <button style="margin-right:2.5em; margin-top: 1em" mat-raised-button color="primary" [disabled]="!selectedFile">Upload</button>
+</form>
+  </mat-card-content>
+</mat-card>

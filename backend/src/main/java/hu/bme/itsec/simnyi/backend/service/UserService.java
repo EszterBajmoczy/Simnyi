@@ -48,7 +48,7 @@ public class UserService {
             var psw = checkPsw(dto.getPassword());
 
             if(!psw){
-                throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Incorrect password");
+                throw new CustomHttpException(HttpStatus.BAD_REQUEST, "Not a secure enough password!");
             }
 
             var user = new User();
@@ -62,7 +62,7 @@ public class UserService {
             }
             return HttpStatus.OK;
         } catch (Exception e) {
-            throw new CustomHttpException(HttpStatus.BAD_REQUEST, e.getMessage());
+            throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
         }
     }
 

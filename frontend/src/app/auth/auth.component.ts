@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {first} from 'rxjs/operators';
@@ -12,12 +12,12 @@ import {AuthenticationService} from '../_services/authentication.service';
   styleUrls: ['./auth.component.css']
 })
 export class AuthComponent implements OnInit {
-  // @ts-ignore
-  loginForm: FormGroup;
+  loginForm!: FormGroup;
   loading = false;
   registerLoading = false;
   submitted = false;
   returnUrl: string | undefined;
+  error: any = {loginInvalid: false, usernameConflict: false, notSecurePassword: false, message: undefined};
 
   constructor(
     private formBuilder: FormBuilder,
@@ -45,30 +45,28 @@ export class AuthComponent implements OnInit {
 
   login() {
     this.submitted = true;
-
-    this.alertService.clear();
+    this.resetErrors();
 
     if (this.loginForm.invalid) {
       return;
     }
 
     this.loading = true;
-    this.authenticationService.login(this.f.username.value, this.f.password.value)
+    this.authenticationService.login(this.loginForm.value)
       .pipe(first())
       .subscribe(
         data => {
           this.router.navigate([this.returnUrl]);
         },
         error => {
-          this.alertService.error(error);
+          this.error.message = error;
           this.loading = false;
         });
   }
 
   register() {
     this.submitted = true;
-
-    this.alertService.clear();
+    this.resetErrors();
 
     if (this.loginForm.invalid) {
       return;
@@ -83,8 +81,21 @@ export class AuthComponent implements OnInit {
           this.router.navigate(['/login']);
         },
         error => {
-          this.alertService.error(error);
+          if(error.startsWith("409"))
+            this.error.usernameConflict = true;
+          else if(error.startsWith("400"))
+            this.error.notSecurePassword = true;
+          else
+            this.error.message = error;
           this.registerLoading = false;
         });
   }
+
+  private resetErrors() {
+    this.error.message = undefined;
+    this.error.loginInvalid = false;
+    this.error.usernameConflict = false;
+    this.error.notSecurePassword = false;
+  }
+
 }

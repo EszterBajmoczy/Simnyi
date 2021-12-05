@@ -1,0 +1,73 @@
+<h2>Admin panel</h2>
+
+<div class="example-action-buttons">
+  <button mat-button (click)="accordion.openAll()">Expand All</button>
+  <button mat-button (click)="accordion.closeAll()">Collapse All</button>
+</div>
+
+<mat-accordion class="example-headers-align" multi>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        Admin register
+      </mat-panel-title>
+      <mat-panel-description>
+        Register new administrator
+        <mat-icon>how_to_reg</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+
+    <form (ngSubmit)="registerAdmin()" [formGroup]="registerForm">
+      <mat-error *ngIf="error.usernameConflict">
+        Username is already taken.
+      </mat-error>
+      <mat-error *ngIf="error.notSecurePassword">
+        Not a secure enough password!
+      </mat-error>
+      <mat-error *ngIf="error.message.register">
+        {{error.message.register}}
+      </mat-error>
+      <mat-form-field class="full-width-input">
+        <input matInput placeholder="Username" formControlName="username" required [ngClass]="{ 'is-invalid': freg.username.errors }">
+        <mat-error *ngIf="freg.username.errors?.required">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="full-width-input">
+        <input matInput type="password" placeholder="Password" formControlName="password" required minlength="10" [ngClass]="{ 'is-invalid': freg.password.errors }">
+        <mat-error *ngIf="freg.password.errors?.required">
+          Password is required
+        </mat-error>
+        <mat-error *ngIf="freg.password.errors?.minlength">
+          Min length is 10 character
+        </mat-error>
+      </mat-form-field>
+      <button style="margin: 1em" mat-raised-button color="primary" [disabled]="registerForm.invalid">Register</button>
+    </form>
+
+    </mat-expansion-panel>
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        User delete
+      </mat-panel-title>
+      <mat-panel-description>
+        Remove user account
+        <mat-icon>person_remove</mat-icon>
+      </mat-panel-description>
+    </mat-expansion-panel-header>
+    <form (ngSubmit)="removeUser()" [formGroup]="removeForm">
+      <mat-error *ngIf="error.message.remove">
+        {{error.message.remove}}
+      </mat-error>
+      <mat-form-field class="full-width-input">
+        <input matInput placeholder="Username" formControlName="username" required [ngClass]="{ 'is-invalid': frem.username.errors }">
+        <mat-error *ngIf="frem.username.errors?.required">
+          Username is required
+        </mat-error>
+      </mat-form-field>
+      <button style="margin: 1em" mat-raised-button color="primary" [disabled]="removeForm.invalid">Remove</button>
+    </form>
+  </mat-expansion-panel>
+</mat-accordion>

@@ -3,6 +3,7 @@ import {HttpClient} from '@angular/common/http';
 import {BehaviorSubject, Observable} from 'rxjs';
 import {map} from 'rxjs/operators';
 import {globals} from '../_helpers/globals';
+import jwt_decode from 'jwt-decode';
 
 import {User} from '../_models/user';
 
@@ -20,30 +21,48 @@ export class AuthenticationService {
     return this.currentUserSubject.value;
   }
 
-  register(user: User) {
-    return this.http.post(`${globals.apiUrl}/user/register`, user);
-  }
-
-  delete(name: string) {
-    return this.http.delete(`${globals.apiUrl}/user/${name}`);
-  }
-
-  getAll() {
-    return this.http.get<User[]>(`${globals.apiUrl}/user`);
-  }
-
-  login(username: string, password: string) {
-    return this.http.post<any>(`${globals.apiUrl}/user/authenticate`, {username, password})
-      .pipe(map(user => {
+  login(req: User) {
+    return this.http.post<any>(`${globals.apiUrl}/public/user/login`, req, {observe: "response"})
+      .pipe(map(resp => {
+        const user = new User();
+        user.username = req.username;
+        user.token = resp.headers.get('Authorization');
+        const token = this.getDecodedAccessToken(user.token!);
+        user.admin = token.authorities[0] === "ADMIN"
         localStorage.setItem('currentUser', JSON.stringify(user));
         this.currentUserSubject.next(user);
         return user;
       }));
   }
 
+  private getDecodedAccessToken(token: string): any {
+    try{
+      return jwt_decode(token);
+    }
+    catch(Error){
+      return null;
+    }
+  }
+
+  register(user: User) {
+    return this.http.post(`${globals.apiUrl}/public/user/register`, user);
+  }
+
+  userUpdate(user: User) {
+    return this.http.put(`${globals.apiUrl}/user/user-update`, user);
+  }
+
+  delete(name: string) {
+    return this.http.delete(`${globals.apiUrl}/admin/delete/${name}`);
+  }
+
+  registerAdmin(user: User) {
+    return this.http.post(`${globals.apiUrl}/admin/register`, user);
+  }
+
+
   logout() {
     localStorage.removeItem('currentUser');
-    //TODO remove user token from db
 
     // @ts-ignore
     this.currentUserSubject.next(null);
