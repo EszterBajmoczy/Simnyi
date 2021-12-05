@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {HttpEventType, HttpResponse} from '@angular/common/http';
 import {CaffService} from '../_services/caff.service';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -17,7 +18,9 @@ export class UploadComponent implements OnInit {
 
   fileName = '';
 
-  constructor(private formBuilder: FormBuilder, private caffService: CaffService){}
+  constructor(private formBuilder: FormBuilder,
+              private router: Router,
+              private caffService: CaffService){}
 
   ngOnInit() {
     this.uploadForm = this.formBuilder.group({
@@ -32,9 +35,7 @@ export class UploadComponent implements OnInit {
     }
 
     this.caffService.upload(this.uploadForm.value.imageName, this.fileContent!).subscribe(resp => {
-        this.selectedFile = undefined;
-        this.fileName = '';
-        this.uploadForm.reset();
+        this.router.navigate(['/']);
       }, error => {
         this.error.message = error;
       });
