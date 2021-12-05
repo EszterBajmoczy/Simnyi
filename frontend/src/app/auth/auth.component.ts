@@ -17,6 +17,7 @@ export class AuthComponent implements OnInit {
   registerLoading = false;
   submitted = false;
   returnUrl: string | undefined;
+  error: any = {loginInvalid: false, usernameConflict: false, notSecurePassword: false, message: undefined};
 
   constructor(
     private formBuilder: FormBuilder,
@@ -44,8 +45,7 @@ export class AuthComponent implements OnInit {
 
   login() {
     this.submitted = true;
-
-    this.alertService.clear();
+    this.resetErrors();
 
     if (this.loginForm.invalid) {
       return;
@@ -59,15 +59,14 @@ export class AuthComponent implements OnInit {
           this.router.navigate([this.returnUrl]);
         },
         error => {
-          this.alertService.error(error);
+          this.error.message = error;
           this.loading = false;
         });
   }
 
   register() {
     this.submitted = true;
-
-    this.alertService.clear();
+    this.resetErrors();
 
     if (this.loginForm.invalid) {
       return;
@@ -82,9 +81,21 @@ export class AuthComponent implements OnInit {
           this.router.navigate(['/login']);
         },
         error => {
-          this.alertService.error(error);
+          if(error.startsWith("409"))
+            this.error.usernameConflict = true;
+          else if(error.startsWith("400"))
+            this.error.notSecurePassword = true;
+          else
+            this.error.message = error;
           this.registerLoading = false;
         });
+  }
+
+  private resetErrors() {
+    this.error.message = undefined;
+    this.error.loginInvalid = false;
+    this.error.usernameConflict = false;
+    this.error.notSecurePassword = false;
   }
 
 }

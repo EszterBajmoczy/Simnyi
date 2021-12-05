@@ -9,6 +9,9 @@
           <mat-error *ngIf="error.usernameConflict">
             Username is already taken.
           </mat-error>
+          <mat-error *ngIf="error.notSecurePassword">
+            Not a secure enough password!
+          </mat-error>
           <mat-error *ngIf="error.message">
             {{error.message}}
           </mat-error>
@@ -19,9 +22,12 @@
             </mat-error>
           </mat-form-field>
           <mat-form-field class="full-width-input">
-            <input matInput type="password" placeholder="Password" formControlName="password" required [ngClass]="{ 'is-invalid': submitted && f.password.errors }">
+            <input matInput type="password" placeholder="Password" formControlName="password" required minlength="4" [ngClass]="{ 'is-invalid': submitted && f.password.errors }"> <!-- TODO change minlength to 10 -->
             <mat-error *ngIf="f.password.errors?.required">
               Password is required
+            </mat-error>
+            <mat-error *ngIf="f.password.errors?.minlength">
+              Min length is 10 character
             </mat-error>
           </mat-form-field>
           <button style="margin-right:2.5em" mat-raised-button color="primary" (click)="login()" [disabled]="loading">Login</button>
