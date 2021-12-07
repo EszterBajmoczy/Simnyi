@@ -47,8 +47,16 @@ public class CaffService {
     }
 
     public void create(@NotNull String name, String multipartFile) {
-        byte[] decodedBytes = Base64.getDecoder().decode(multipartFile.getBytes());
-        byte[] decodedBytes2 = Base64.getDecoder().decode(new String(decodedBytes).replace("data:application/octet-stream;base64,","").getBytes());
+        byte[] decodedBytes2;
+
+        try{
+            byte[] decodedBytes = Base64.getDecoder().decode(multipartFile.getBytes());
+            decodedBytes2 = Base64.getDecoder().decode(new String(decodedBytes).replace("data:application/octet-stream;base64,","").getBytes());
+        } catch (Exception e) {
+            logger.error(e);
+            throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Caff file is not correct.");
+        }
+
         var caff = new Caff();
         caff.setName(name);
         caff.setMimeType("CAFF");
@@ -66,7 +74,12 @@ public class CaffService {
                     bmpFileFullPath);
             processBuilder.directory(new File("."));
             var process = processBuilder.start();
-            process.waitFor(10, TimeUnit.SECONDS);
+            var exitCode = process.waitFor();
+
+            if(exitCode != 0){
+                delete(caff.getId());
+                throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Caff file is not correct.");
+            }
         } catch (IOException | InterruptedException e) {
             logger.error(e);
             throw new CustomHttpException(HttpStatus.INTERNAL_SERVER_ERROR, "Error by uploading caff: " + e.getMessage());
